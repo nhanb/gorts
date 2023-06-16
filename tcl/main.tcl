@@ -12,28 +12,8 @@ if {$OS == "Windows"} {
     ttk::style theme use clam
 }
 
-# Very simple line-based RPC where Tcl client talks to Go server
-# via stdin/stdout.
-#
-# For this "readvars" method, the Go server returns multiple lines
-# where each line starts with variable name, followed by a space,
-# with the rest of the line being its value. When done, the server
-# sends a literal "end" line.
-#
-# => readvars
-# <= description Saigon Cup 2023
-# <= p1name BST Diego Umejuarez
-# <= p1score 0
-# [etc.]
-# <= end
-puts "readvars"
-set line [gets stdin]
-while {$line != "end"} {
-    set spaceindex [string first " " $line]
-    set key [string range $line 0 $spaceindex-1]
-    set val [string range $line $spaceindex+1 end]
-    set ${key} $val
-    set line [gets stdin]
+wm protocol . WM_DELETE_WINDOW {
+    exit 0
 }
 
 # GUI
@@ -94,3 +74,32 @@ grid .c.buttons.swap -row 0 -column 3
 grid columnconfigure .c.players 2 -pad 5
 grid columnconfigure .c.buttons 1 -pad 15
 grid columnconfigure .c.buttons 3 -pad 15
+
+
+# Very simple line-based IPC where Tcl client talks to Go server
+# via stdin/stdout.
+#
+# For this "readvars" method, the Go server returns multiple lines
+# where each line starts with variable name, followed by a space,
+# with the rest of the line being its value. When done, the server
+# sends a literal "end" line.
+#
+# => readvars
+# <= description Saigon Cup 2023
+# <= p1name BST Diego Umejuarez
+# <= p1score 0
+# [etc.]
+# <= end
+proc readvars {} {
+    puts "readvars"
+    set line [gets stdin]
+    while {$line != "end"} {
+        set spaceindex [string first " " $line]
+        set key [string range $line 0 $spaceindex-1]
+        set val [string range $line $spaceindex+1 end]
+        # this makes sure it sets the outer scope's variable:
+        variable ${key}
+        set ${key} $val
+        set line [gets stdin]
+    }
+}
