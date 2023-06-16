@@ -68,18 +68,48 @@ func connectTclProc() {
 	// TODO: this should probably be refactored out
 	state := initState()
 
-	io.WriteString(stdin, "readvars\n")
+	io.WriteString(stdin, "readstate\n")
 
-	reqscanner := bufio.NewScanner(stdout)
-	for reqscanner.Scan() {
-		req := reqscanner.Text()
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		req := scanner.Text()
 		println("=> " + req)
 		switch req {
-		case "readvars":
-			for _, line := range serveReadvars(state) {
+		case "readstate":
+			for _, line := range []string{
+				"description " + state.Description,
+				"p1name " + state.P1name,
+				"p1country " + state.P1country,
+				"p1score " + strconv.Itoa(state.P1score),
+				"p1team " + state.P1team,
+				"p2name " + state.P2name,
+				"p2country " + state.P2country,
+				"p2score " + strconv.Itoa(state.P2score),
+				"p2team " + state.P2team,
+				"end",
+			} {
 				println("<= " + line)
 				io.WriteString(stdin, line+"\n")
 			}
+		case "applystate":
+			next := func() string {
+				scanner.Scan()
+				v := scanner.Text()
+				println("=>", v)
+				return v
+			}
+			// TODO: there must be more... civilized way.
+			state.Description = next()
+			state.P1name = next()
+			state.P1country = next()
+			state.P1score, _ = strconv.Atoi(next())
+			state.P1team = next()
+			state.P2name = next()
+			state.P2country = next()
+			state.P2score, _ = strconv.Atoi(next())
+			state.P2team = next()
+			state.Write()
+
 		default:
 			println("Skipping bogus command: " + req)
 		}
@@ -87,23 +117,8 @@ func connectTclProc() {
 
 	println("Tcl process terminated.")
 
-	if err := reqscanner.Err(); err != nil {
+	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
-	}
-}
-
-func serveReadvars(s State) []string {
-	return []string{
-		"description " + s.Description,
-		"p1name " + s.P1name,
-		"p1country " + s.P1country,
-		"p1score " + strconv.Itoa(s.P1score),
-		"p1team " + s.P1team,
-		"p2name " + s.P2name,
-		"p2country " + s.P2country,
-		"p2score " + strconv.Itoa(s.P2score),
-		"p2team " + s.P2team,
-		"end",
 	}
 }
 
@@ -123,6 +138,7 @@ func initState() State {
 	var state State
 	file, err := os.Open(StateFile)
 	if err == nil {
+		defer file.Close()
 		bytes, err := ioutil.ReadAll(file)
 		if err != nil {
 			panic(err)
@@ -130,4 +146,15 @@ func initState() State {
 		json.Unmarshal(bytes, &state)
 	}
 	return state
+}
+
+func (s *State) Write() {
+	blob, err := json.MarshalIndent(s, "", "    ")
+	if err != nil {
+		panic(err)
+	}
+	err = ioutil.WriteFile(StateFile, blob, 0644)
+	if err != nil {
+		panic(err)
+	}
 }

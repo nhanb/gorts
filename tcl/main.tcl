@@ -39,7 +39,7 @@ ttk::button .c.players.p2win -text "▲ Win" -width 5
 ttk::label .c.players.p2teamlbl -text "Team 2"
 ttk::combobox .c.players.p2team -textvariable p2team
 ttk::frame .c.buttons
-ttk::button .c.buttons.apply -text "▶ Apply"
+ttk::button .c.buttons.apply -text "▶ Apply" -command applystate
 ttk::button .c.buttons.discard -text "✖ Discard"
 ttk::button .c.buttons.reset -text "↶ Reset scores"
 ttk::button .c.buttons.swap -text "⇄ Swap players"
@@ -79,19 +79,19 @@ grid columnconfigure .c.buttons 3 -pad 15
 # Very simple line-based IPC where Tcl client talks to Go server
 # via stdin/stdout.
 #
-# For this "readvars" method, the Go server returns multiple lines
+# For this "readstate" method, the Go server returns multiple lines
 # where each line starts with variable name, followed by a space,
 # with the rest of the line being its value. When done, the server
 # sends a literal "end" line.
 #
-# => readvars
+# => readstate
 # <= description Saigon Cup 2023
 # <= p1name BST Diego Umejuarez
 # <= p1score 0
 # [etc.]
 # <= end
-proc readvars {} {
-    puts "readvars"
+proc readstate {} {
+    puts "readstate"
     set line [gets stdin]
     while {$line != "end"} {
         set spaceindex [string first " " $line]
@@ -102,4 +102,26 @@ proc readvars {} {
         set ${key} $val
         set line [gets stdin]
     }
+}
+
+proc applystate {} {
+    puts "applystate"
+    variable description
+    variable p1name
+    variable p1country
+    variable p1score
+    variable p1team
+    variable p2name
+    variable p2country
+    variable p2score
+    variable p2team
+    puts $description
+    puts $p1name
+    puts $p1country
+    puts $p1score
+    puts $p1team
+    puts $p2name
+    puts $p2country
+    puts $p2score
+    puts $p2team
 }
