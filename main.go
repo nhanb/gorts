@@ -5,38 +5,55 @@ import (
 	_ "embed"
 	"io"
 	"log"
+	"net/http"
 	"os/exec"
+	"sync"
 )
+
+const WebPort = "1337"
+const WebDir = "web"
+const StateFile = WebDir + "/state.json"
 
 //go:embed tcl/main.tcl
 var mainTcl string
 
 func main() {
-	tcl := initTcl()
-	tcl.Connect()
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		connectTclProc()
+	}()
+
+	// No need to wait on the http server,
+	// just let it die when the GUI is closed.
+	go func() {
+		println("Serving scoreboard at http://localhost:" + WebPort)
+		fs := http.FileServer(http.Dir(WebDir))
+		http.Handle("/", fs)
+		err := http.ListenAndServe("127.0.0.1:"+WebPort, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	wg.Wait()
 }
 
-type Tcl struct {
-	cmd *exec.Cmd
-}
-
-func initTcl() Tcl {
+func connectTclProc() {
 	cmd := exec.Command("tclsh")
-	return Tcl{cmd}
-}
-
-func (t *Tcl) Connect() {
-	stdout, err := t.cmd.StdoutPipe()
+	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		panic(err)
 	}
 
-	stdin, err := t.cmd.StdinPipe()
+	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		panic(err)
 	}
 
-	err = t.cmd.Start()
+	err = cmd.Start()
 	if err != nil {
 		panic(err)
 	}

@@ -1,0 +1,155 @@
+/*
+Fonts lifted from https://google-webfonts-helper.herokuapp.com.
+I'm using woff instead of woff2 simply because OBS's Browser Source
+plugin apparently came with a pretty old Chromium.
+*/
+@font-face {
+  font-family: "Oswald";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Oswald Regular"), local("Oswald-Regular"),
+    url("assets/fonts/oswald-v17-vietnamese_cyrillic_latin_latin-ext-regular.woff")
+      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* oswald-500 - vietnamese_cyrillic_latin_latin-ext */
+@font-face {
+  font-family: "Oswald";
+  font-style: normal;
+  font-weight: 500;
+  src: local("Oswald Medium"), local("Oswald-Medium"),
+    url("assets/fonts/oswald-v17-vietnamese_cyrillic_latin_latin-ext-500.woff")
+      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* oswald-600 - vietnamese_cyrillic_latin_latin-ext */
+@font-face {
+  font-family: "Oswald";
+  font-style: normal;
+  font-weight: 600;
+  src: local("Oswald SemiBold"), local("Oswald-SemiBold"),
+    url("assets/fonts/oswald-v17-vietnamese_cyrillic_latin_latin-ext-600.woff")
+      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* oswald-700 - vietnamese_cyrillic_latin_latin-ext */
+@font-face {
+  font-family: "Oswald";
+  font-style: normal;
+  font-weight: 700;
+  src: local("Oswald Bold"), local("Oswald-Bold"),
+    url("assets/fonts/oswald-v17-vietnamese_cyrillic_latin_latin-ext-700.woff")
+      format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+body {
+  width: 1920px;
+  height: 1080px;
+  /*box-sizing: border-box;*/
+  /*border: 2px solid red;*/
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  font-weight: 600;
+}
+
+#scoreboard {
+  text-align: center;
+  position: relative;
+}
+
+#p1score,
+#p2score,
+#p1name,
+#p2name,
+#p1country,
+#p2country,
+#p1team,
+#p2team,
+#description {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  color: white;
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+}
+
+#p1team,
+#p2team {
+  font-size: 32px;
+  font-family: "Oswald", sans-serif;
+  text-shadow: 0px 0px 20px black;
+}
+
+#description {
+  left: 0;
+  right: 0;
+  top: 6px;
+  text-transform: uppercase;
+  font-size: 23px;
+}
+
+#p1country,
+#p2country {
+  font-size: 2em;
+  top: -3px;
+}
+
+#p1country {
+  left: 340px;
+}
+
+#p2country {
+  right: 340px;
+}
+
+#p1score,
+#p2score {
+  top: 2px;
+  color: black;
+  font-size: 32px;
+}
+
+#p1score {
+  left: 285px;
+}
+
+#p2score {
+  right: 285px;
+}
+
+#p1name,
+#p2name {
+  top: 1px;
+  font-size: 28px;
+}
+
+#p1name {
+  left: 390px;
+}
+
+#p2name {
+  right: 390px;
+}
+
+#p1team {
+  top: 182px;
+  left: 153px;
+}
+
+#p2team {
+  top: 182px;
+  right: 153px;
+}
+
+#logo {
+  display: block;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
