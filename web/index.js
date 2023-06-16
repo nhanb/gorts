@@ -20,6 +20,16 @@ const getDiff = (newState, oldState) => {
   return diff;
 };
 
+// Thanks internets:
+// https://dev.to/jorik/country-code-to-flag-emoji-a21
+function getFlagEmoji(countryCode) {
+  const codePoints = countryCode
+    .toUpperCase()
+    .split("")
+    .map((char) => 127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
+}
+
 const drawDiffToDom = (diff) => {
   Object.keys(diff).forEach((key) => {
     const element = document.querySelector(`#${key}`);
@@ -34,6 +44,13 @@ const drawDiffToDom = (diff) => {
     let updateFunc = () => {
       element.innerHTML = newValue;
     };
+
+    // Country needs to be converted from code to flag emoji
+    if (key === "p1country" || key === "p2country") {
+      updateFunc = () => {
+        element.innerHTML = getFlagEmoji(newValue);
+      };
+    }
 
     fadeUpdate(element, newValue, updateFunc);
   });
