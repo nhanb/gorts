@@ -27,7 +27,7 @@ ttk::label .c.players.p1lbl -text "Player 1"
 ttk::combobox .c.players.p1name -textvariable p1name -width 35
 ttk::combobox .c.players.p1country -textvariable p1country -width 5
 ttk::spinbox .c.players.p1score -textvariable p1score -from 0 -to 999 -width 4
-ttk::button .c.players.p1win -text "▲ Win" -width 5
+ttk::button .c.players.p1win -text "▲ Win" -width 5 -state disabled
 ttk::label .c.players.p1teamlbl -text "Team 1"
 ttk::combobox .c.players.p1team -textvariable p1team
 ttk::separator .c.players.separator -orient horizontal
@@ -35,14 +35,14 @@ ttk::label .c.players.p2lbl -text "Player 2"
 ttk::combobox .c.players.p2name -textvariable p2name -width 35
 ttk::combobox .c.players.p2country -textvariable p2country -width 5
 ttk::spinbox .c.players.p2score -textvariable p2score -from 0 -to 999 -width 4
-ttk::button .c.players.p2win -text "▲ Win" -width 5
+ttk::button .c.players.p2win -text "▲ Win" -width 5 -state disabled
 ttk::label .c.players.p2teamlbl -text "Team 2"
 ttk::combobox .c.players.p2team -textvariable p2team
 ttk::frame .c.buttons
 ttk::button .c.buttons.apply -text "▶ Apply" -command applystate
-ttk::button .c.buttons.discard -text "✖ Discard"
-ttk::button .c.buttons.reset -text "↶ Reset scores"
-ttk::button .c.buttons.swap -text "⇄ Swap players"
+ttk::button .c.buttons.discard -text "✖ Discard" -state disabled
+ttk::button .c.buttons.reset -text "↶ Reset scores" -state disabled
+ttk::button .c.buttons.swap -text "⇄ Swap players" -state disabled
 
 grid .c -row 0 -column 0 -sticky NESW
 grid .c.description -row 0 -column 0 -sticky NESW -pady {0 5}
