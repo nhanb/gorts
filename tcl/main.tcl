@@ -78,30 +78,26 @@ grid columnconfigure .c.buttons 3 -pad 15
 
 # Very simple line-based IPC where Tcl client talks to Go server
 # via stdin/stdout.
-#
-# For this "readstate" method, the Go server returns multiple lines
-# where each line starts with variable name, followed by a space,
-# with the rest of the line being its value. When done, the server
-# sends a literal "end" line.
-#
-# => readstate
-# <= description Saigon Cup 2023
-# <= p1name BST Diego Umejuarez
-# <= p1score 0
-# [etc.]
-# <= end
 proc readstate {} {
     puts "readstate"
-    set line [gets stdin]
-    while {$line != "end"} {
-        set spaceindex [string first " " $line]
-        set key [string range $line 0 $spaceindex-1]
-        set val [string range $line $spaceindex+1 end]
-        # this makes sure it sets the outer scope's variable:
-        variable ${key}
-        set ${key} $val
-        set line [gets stdin]
-    }
+    variable description
+    variable p1name
+    variable p1country
+    variable p1score
+    variable p1team
+    variable p2name
+    variable p2country
+    variable p2score
+    variable p2team
+    set description [gets stdin]
+    set p1name [gets stdin]
+    set p1country [gets stdin]
+    set p1score [gets stdin]
+    set p1team [gets stdin]
+    set p2name [gets stdin]
+    set p2country [gets stdin]
+    set p2score [gets stdin]
+    set p2team [gets stdin]
 }
 
 proc applystate {} {

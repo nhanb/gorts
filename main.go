@@ -71,34 +71,35 @@ func connectTclProc() {
 	io.WriteString(stdin, "readstate\n")
 
 	scanner := bufio.NewScanner(stdout)
+
+	next := func() string {
+		scanner.Scan()
+		v := scanner.Text()
+		println("=>", v)
+		return v
+	}
+
+	respond := func(s string) {
+		println("<=", s)
+		io.WriteString(stdin, s+"\n")
+	}
+
 	for scanner.Scan() {
 		req := scanner.Text()
 		println("=> " + req)
 		switch req {
 		case "readstate":
-			for _, line := range []string{
-				"description " + state.Description,
-				"p1name " + state.P1name,
-				"p1country " + state.P1country,
-				"p1score " + strconv.Itoa(state.P1score),
-				"p1team " + state.P1team,
-				"p2name " + state.P2name,
-				"p2country " + state.P2country,
-				"p2score " + strconv.Itoa(state.P2score),
-				"p2team " + state.P2team,
-				"end",
-			} {
-				println("<= " + line)
-				io.WriteString(stdin, line+"\n")
-			}
-		case "applystate":
-			next := func() string {
-				scanner.Scan()
-				v := scanner.Text()
-				println("=>", v)
-				return v
-			}
 			// TODO: there must be more... civilized way.
+			respond(state.Description)
+			respond(state.P1name)
+			respond(state.P1country)
+			respond(strconv.Itoa(state.P1score))
+			respond(state.P1team)
+			respond(state.P2name)
+			respond(state.P2country)
+			respond(strconv.Itoa(state.P2score))
+			respond(state.P2team)
+		case "applystate":
 			state.Description = next()
 			state.P1name = next()
 			state.P1country = next()
