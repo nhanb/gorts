@@ -3,14 +3,15 @@ package require Tk
 wm title . "Overly Repetitive Tedious Software (in Go)"
 tk appname gorts
 
-set OS [lindex $tcl_platform(os) 0]
-if {$OS == "Windows"} {
-    ttk::style theme use vista
-} elseif {$OS == "Darwin"} {
-    ttk::style theme use aqua
-} else {
-    ttk::style theme use clam
-}
+#set OS [lindex $tcl_platform(os) 0]
+#if {$OS == "Windows"} {
+    #ttk::style theme use vista
+#} elseif {$OS == "Darwin"} {
+    #ttk::style theme use aqua
+#} else {
+    #ttk::style theme use clam
+#}
+ttk::style theme use clam
 
 wm protocol . WM_DELETE_WINDOW {
     exit 0
