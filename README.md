@@ -1,5 +1,7 @@
 # GORTS
 
+![](gorts.png)
+
 [![builds.sr.ht status](https://builds.sr.ht/~nhanb/gorts/commits/master.svg)](https://builds.sr.ht/~nhanb/gorts/commits/master?)
 
 ... is [ORTS][1] but in pure Go and pure Tcl/Tk
