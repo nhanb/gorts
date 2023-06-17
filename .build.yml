@@ -1,0 +1,24 @@
+image: debian/stable
+
+packages:
+  - curl
+  - zip
+
+tasks:
+  - make-linux: |
+      curl -L 'https://go.dev/dl/go1.20.5.linux-amd64.tar.gz' > go.tar.gz
+      tar -xf go.tar.gz && rm go.tar.gz
+      cd gorts
+      PATH=$PATH:~/go/bin make dist-linux
+      cd dist
+      zip -r gorts-linux.zip linux
+
+  - make-windows: |
+      cd gorts
+      PATH=$PATH:~/go/bin make dist-windows
+      cd dist
+      zip -r gorts-windows.zip windows
+
+artifacts:
+  - gorts/dist/gorts-linux.zip
+  - gorts/dist/gorts-windows.zip
