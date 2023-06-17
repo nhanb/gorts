@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 )
 
@@ -37,7 +38,12 @@ func main() {
 }
 
 func startGUI() {
-	cmd := exec.Command("tclsh")
+	tclPath := "tclsh"
+	if runtime.GOOS == "windows" {
+		tclPath = "./tclkit.exe"
+	}
+
+	cmd := exec.Command(tclPath)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		panic(err)

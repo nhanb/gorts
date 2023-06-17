@@ -9,6 +9,15 @@ passing messages through good ole pipes, the way Bell Labs intended.
 Nothing is guaranteed to work yet. If you need to use something _now_, see
 [ORTS][1].
 
+# Windows
+
+Just download the release, unzip and run gorts.exe.
+
+# Linux
+
+Needs tcl/tk installed on your OS.
+Assumes `tclsh` command is available in $PATH.
+
 # License
 
 Copyright (C) 2023 Bui Thanh Nhan
