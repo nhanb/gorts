@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
-	"sync"
 )
 
 const WebPort = "1337"
@@ -22,14 +21,6 @@ const StateFile = WebDir + "/state.json"
 var mainTcl string
 
 func main() {
-	var wg sync.WaitGroup
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		connectTclProc()
-	}()
-
 	// No need to wait on the http server,
 	// just let it die when the GUI is closed.
 	go func() {
@@ -42,10 +33,10 @@ func main() {
 		}
 	}()
 
-	wg.Wait()
+	startGUI()
 }
 
-func connectTclProc() {
+func startGUI() {
 	cmd := exec.Command("tclsh")
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
@@ -89,7 +80,7 @@ func connectTclProc() {
 		println("=> " + req)
 		switch req {
 		case "readstate":
-			// TODO: there must be more... civilized way.
+			// TODO: there must be a more... civilized way.
 			respond(state.Description)
 			respond(state.P1name)
 			respond(state.P1country)
