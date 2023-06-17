@@ -77,8 +77,16 @@ grid columnconfigure .c.buttons 1 -pad 15
 grid columnconfigure .c.buttons 3 -pad 15
 
 
-# Very simple line-based IPC where Tcl client talks to Go server
-# via stdin/stdout.
+# The following procs constitute a very simple line-based IPC system where Tcl
+# client talks to Go server via stdin/stdout.
+
+proc seticon {b64data} {
+    image create photo applicationIcon -data [
+        binary decode base64 $b64data
+    ]
+    wm iconphoto . -default applicationIcon
+}
+
 proc readstate {} {
     puts "readstate"
     variable description

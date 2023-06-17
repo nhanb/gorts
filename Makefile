@@ -9,10 +9,14 @@ dist-windows:
 		go build -o dist/windows/gorts.exe -ldflags -H=windowsgui
 	cp -r web dist/windows/web
 
-# gorts.ico was produced from Haiku OS's midiplayer icon using imagemagick:
-# convert -background transparent -density 300 \
-#   -define 'icon:auto-resize=256,128,64,32,24,16' \
-#   App_MidiPlayer.svg ~/pj/gorts/gorts.ico
+gorts.png: gorts.svg
+	convert -background transparent -density 300 -resize 256x256 gorts.svg gorts.png
+
+gorts.ico: gorts.svg
+	convert -background transparent -density 300 \
+		-define 'icon:auto-resize=256,128,64,32,24,16' \
+		gorts.svg gorts.ico
+
 gorts.syso: gorts.ico
 	# needs `go install github.com/akavel/rsrc@latest`
 	rsrc -ico gorts.ico -o gorts.syso

@@ -3,7 +3,9 @@ package main
 import (
 	"bufio"
 	_ "embed"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -20,6 +22,9 @@ const StateFile = WebDir + "/state.json"
 
 //go:embed tcl/main.tcl
 var mainTcl string
+
+//go:embed gorts.png
+var gortsPngIcon []byte
 
 func main() {
 	// No need to wait on the http server,
@@ -64,6 +69,9 @@ func startGUI() {
 
 	// TODO: this should probably be refactored out
 	state := initState()
+
+	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
+	fmt.Fprintf(stdin, "seticon %s\n", b64icon)
 
 	io.WriteString(stdin, "readstate\n")
 
