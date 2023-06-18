@@ -64,10 +64,9 @@ func startGUI() {
 		panic(err)
 	}
 
-	io.WriteString(stdin, mainTcl)
+	fmt.Fprintln(stdin, mainTcl)
 	println("Loaded main tcl script.")
 
-	// TODO: this should probably be refactored out
 	state := initState()
 
 	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
@@ -75,7 +74,7 @@ func startGUI() {
 
 	fmt.Fprintf(stdin, "set mainstatus \"Point your OBS browser source to http://localhost:%s\"\n", WebPort)
 
-	io.WriteString(stdin, "readstate\n")
+	fmt.Fprintln(stdin, "readstate")
 
 	scanner := bufio.NewScanner(stdout)
 

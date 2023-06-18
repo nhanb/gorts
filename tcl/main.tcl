@@ -139,3 +139,14 @@ proc applystate {} {
     puts $p2score
     puts $p2team
 }
+
+
+# By default this window is not focused and not even brought to
+# foreground on Windows. I suspect it's because tcl is exec'ed from Go.
+# Minimizing then re-opening it seems to do the trick.
+# This workaround, however, makes the window unfocused on KDE, so
+# let's only use it on Windows.
+if {$tcl_platform(platform) == windows} {
+    wm iconify .
+    wm deiconify .
+}
