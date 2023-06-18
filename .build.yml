@@ -1,13 +1,16 @@
-image: debian/stable
+image: archlinux
+oauth: git.sr.ht/REPOSITORIES:RW
 
 packages:
   - curl
   - zip
+  - hut
+  - go
 
 tasks:
   - make-linux: |
-      curl -L 'https://go.dev/dl/go1.20.5.linux-amd64.tar.gz' > go.tar.gz
-      tar -xf go.tar.gz && rm go.tar.gz
+      #curl -L 'https://go.dev/dl/go1.20.5.linux-amd64.tar.gz' > go.tar.gz
+      #tar -xf go.tar.gz && rm go.tar.gz
       cd gorts
       PATH=$PATH:~/go/bin make dist-linux
       cd dist/linux
@@ -19,6 +22,15 @@ tasks:
       cd dist/windows
       curl -L 'https://tclkits.rkeene.org/fossil/raw/tclkit-8.6.3-win32-x86_64.exe?name=403c507437d0b10035c7839f22f5bb806ec1f491' > tclkit.exe
       zip -r ../GORTS-Windows.zip .
+
+  - check-tag: |
+      # Stop if HEAD is not a tagged commit.
+      cd gorts
+      git describe --exact-match HEAD || complete-build
+
+  - release: |
+      hut git artifact upload gorts/dist/GORTS-Linux.zip
+      hut git artifact upload gorts/dist/GORTS-Windows.zip
 
 artifacts:
   - gorts/dist/GORTS-Linux.zip
