@@ -1,5 +1,7 @@
-image: alpine/latest
-oauth: git.sr.ht/OBJECTS:RW
+# Among builds.sr.ht images, alpine/arch/debian-unstable have the necessary packages.
+# I've tried them all: speedwise, alpine > debian > arch.
+image: alpine/edge
+oauth: git.sr.ht/OBJECTS:RW git.sr.ht/REPOSITORIES:RO git.sr.ht/PROFILE:RO
 
 packages:
   - curl
