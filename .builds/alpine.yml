@@ -31,9 +31,17 @@ tasks:
       git describe --exact-match HEAD || complete-build
 
   - release: |
-      cd gorts
-      hut git artifact upload dist/GORTS-Linux.zip
-      hut git artifact upload dist/GORTS-Windows.zip
+      # Sourcehut doesn't allow artifacts with the same name, even if they're
+      # attached to different tags, so we have to make unique zip filenames.
+      # But then we can't use these unique names for the per-build `artifacts`
+      # list down below, because there's no wildcarding allowed there, so we'll
+      # need to keep the generic filenames around too.
+      cd gorts/dist
+      TAG=`git describe`
+      cp GORTS-Linux.zip "GORTS-Linux-${TAG}.zip"
+      cp GORTS-Windows.zip "GORTS-Windows-${TAG}.zip"
+      hut git artifact upload "GORTS-Linux-${TAG}.zip"
+      hut git artifact upload "GORTS-Windows-${TAG}.zip"
 
 artifacts:
   - gorts/dist/GORTS-Linux.zip
