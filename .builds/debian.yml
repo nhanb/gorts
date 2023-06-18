@@ -1,24 +1,22 @@
-image: archlinux
+image: debian/unstable
 oauth: git.sr.ht/OBJECTS:RW
 
 packages:
   - curl
   - zip
   - hut
-  - go
+  - golang
 
 tasks:
   - make-linux: |
-      #curl -L 'https://go.dev/dl/go1.20.5.linux-amd64.tar.gz' > go.tar.gz
-      #tar -xf go.tar.gz && rm go.tar.gz
       cd gorts
-      PATH=$PATH:~/go/bin make dist-linux
+      make dist-linux
       cd dist/linux
       zip -r ../GORTS-Linux.zip .
 
   - make-windows: |
       cd gorts
-      PATH=$PATH:~/go/bin make dist-windows
+      make dist-windows
       cd dist/windows
       curl -L 'https://tclkits.rkeene.org/fossil/raw/tclkit-8.6.3-win32-x86_64.exe?name=403c507437d0b10035c7839f22f5bb806ec1f491' > tclkit.exe
       zip -r ../GORTS-Windows.zip .

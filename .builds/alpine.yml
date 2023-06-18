@@ -1,0 +1,36 @@
+image: alpine/latest
+oauth: git.sr.ht/OBJECTS:RW
+
+packages:
+  - curl
+  - zip
+  - hut
+  - go
+
+tasks:
+  - make-linux: |
+      cd gorts
+      make dist-linux
+      cd dist/linux
+      zip -r ../GORTS-Linux.zip .
+
+  - make-windows: |
+      cd gorts
+      make dist-windows
+      cd dist/windows
+      curl -L 'https://tclkits.rkeene.org/fossil/raw/tclkit-8.6.3-win32-x86_64.exe?name=403c507437d0b10035c7839f22f5bb806ec1f491' > tclkit.exe
+      zip -r ../GORTS-Windows.zip .
+
+  - check-tag: |
+      # Stop if HEAD is not a tagged commit.
+      cd gorts
+      git describe --exact-match HEAD || complete-build
+
+  - release: |
+      cd gorts
+      hut git artifact upload dist/GORTS-Linux.zip
+      hut git artifact upload dist/GORTS-Windows.zip
+
+artifacts:
+  - gorts/dist/GORTS-Linux.zip
+  - gorts/dist/GORTS-Windows.zip
