@@ -3,7 +3,7 @@
 ![](gorts.png)
 
 [![builds.sr.ht status](https://builds.sr.ht/~nhanb/gorts/commits/master.svg)](https://builds.sr.ht/~nhanb/gorts/commits/master?)
-[![github status](https://github.com/nhanb/gorts/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/nhanb/gorts/actions/workflows/releaseyml)
+[![github status](https://github.com/nhanb/gorts/actions/workflows/release.yml/badge.svg)](https://github.com/nhanb/gorts/actions/workflows/release.yml)
 
 ... is [ORTS][1] but in pure Go and pure Tcl/Tk
 passing messages through good ole pipes, the way Bell Labs intended.
@@ -14,18 +14,13 @@ Nothing is guaranteed to work yet. If you need something to use _now_, see
 
 # Download
 
-You can either download from SourceHut or GitHub.
+You can download from either of:
 
-## SourceHut
-
-Go to <https://git.sr.ht/~nhanb/gorts/refs>, click on the latest version
-(vX.X.X), download either `GORTS-Linux-vX.X.X.zip` or
-`GORTS-Windows-vX.X.X.zip`.
-
-## GitHub (downloads faster in my experience)
-
-Go to <https://github.com/nhanb/gorts/releases/latest>, download either
-`GORTS-Linux.zip` or `GORTS-Windows.zip`.
+- [SourceHut](https://git.sr.ht/~nhanb/gorts/refs): click on the latest
+  version (vX.X.X), download `GORTS-Linux-vX.X.X.zip` or
+  `GORTS-Windows-vX.X.X.zip`.
+- [GitHub](https://github.com/nhanb/gorts/releases/latest): download
+  `GORTS-Linux.zip` or `GORTS-Windows.zip`.
 
 # Use
 
