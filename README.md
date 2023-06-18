@@ -18,12 +18,17 @@ Go to <https://git.sr.ht/~nhanb/gorts/refs>, click on the latest version
 
 ## Windows
 
-Just download the release, unzip and run gorts.exe.
+Just unzip and run gorts.exe.
 
 ## Linux
 
-Needs tcl/tk installed on your OS.
-Assumes `tclsh` command is available in $PATH.
+Dependency: [tk](https://repology.org/project/tk/versions)
+(we basically assume `tclsh` is available from $PATH)
+
+Unzip, run `gorts` from the unzipped directory.
+
+Proper packaging is not planned because I only develop on Linux and stream on
+Windows. If you want to contribute then I'm happy to give pointers though.
 
 # License
 
