@@ -1,6 +1,8 @@
 # Among builds.sr.ht images, alpine/arch/debian-unstable have the necessary packages.
 # I've tried them all: speedwise, alpine > debian > arch.
 image: alpine/edge
+
+# hut needs these 3 scopes to upload artifact:
 oauth: git.sr.ht/OBJECTS:RW git.sr.ht/REPOSITORIES:RO git.sr.ht/PROFILE:RO
 
 packages:

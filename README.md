@@ -8,14 +8,19 @@
 passing messages through good ole pipes, the way Bell Labs intended.
 
 **GORTS is a work in progress.**
-Nothing is guaranteed to work yet. If you need to use something _now_, see
+Nothing is guaranteed to work yet. If you need something to use _now_, see
 [ORTS][1].
 
-# Windows
+# Download
+
+Go to <https://git.sr.ht/~nhanb/gorts/refs>, click on the latest version
+(vX.X.X), download either `GORTS-Linux.zip` or `GORTS-Windows.zip`.
+
+## Windows
 
 Just download the release, unzip and run gorts.exe.
 
-# Linux
+## Linux
 
 Needs tcl/tk installed on your OS.
 Assumes `tclsh` command is available in $PATH.
