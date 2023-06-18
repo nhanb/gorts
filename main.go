@@ -73,6 +73,8 @@ func startGUI() {
 	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
 	fmt.Fprintf(stdin, "seticon %s\n", b64icon)
 
+	fmt.Fprintf(stdin, "set mainstatus \"Point your OBS browser source to http://localhost:%s\"\n", WebPort)
+
 	io.WriteString(stdin, "readstate\n")
 
 	scanner := bufio.NewScanner(stdout)

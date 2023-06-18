@@ -44,6 +44,7 @@ ttk::button .c.buttons.apply -text "▶ Apply" -command applystate
 ttk::button .c.buttons.discard -text "✖ Discard" -state disabled
 ttk::button .c.buttons.reset -text "↶ Reset scores" -state disabled
 ttk::button .c.buttons.swap -text "⇄ Swap players" -state disabled
+ttk::label .c.status -textvariable mainstatus
 
 grid .c -row 0 -column 0 -sticky NESW
 grid .c.description -row 0 -column 0 -sticky NESW -pady {0 5}
@@ -66,11 +67,12 @@ grid .c.players.p2score -row 3 -column 3
 grid .c.players.p2win -row 3 -column 4 -padx {5 0} -rowspan 2 -sticky NS
 grid .c.players.p2teamlbl -row 4 -column 0
 grid .c.players.p2team -row 4 -column 1 -columnspan 3 -sticky EW
-grid .c.buttons -row 5 -column 0 -sticky W -pady {10 0}
+grid .c.buttons -row 2 -column 0 -sticky W -pady {10 0}
 grid .c.buttons.apply -row 0 -column 0
 grid .c.buttons.discard -row 0 -column 1
 grid .c.buttons.reset -row 0 -column 2
 grid .c.buttons.swap -row 0 -column 3
+grid .c.status -row 3 -column 0 -columnspan 5 -pady {10 0} -sticky EW
 
 grid columnconfigure .c.players 2 -pad 5
 grid columnconfigure .c.buttons 1 -pad 15
