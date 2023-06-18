@@ -1,0 +1,30 @@
+name: Go
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+
+  build:
+    runs-on: debian-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-go@v3
+      with:
+        go-version: 1.20
+
+    - run: make dist/GORTS-Linux.zip
+
+    - run: make dist/GORTS-Windows.zip
+
+    - name: Release
+      uses: softprops/action-gh-release@v0.1.15
+      with:
+        files: |
+          dist/GORTS-Linux.zip
+          dist/GORTS-Windows.zip
