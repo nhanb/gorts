@@ -83,7 +83,7 @@ ttk::label .c.players.p2teamlbl -text "Team 2"
 ttk::combobox .c.players.p2team -textvariable scoreboard(p2team)
 ttk::frame .c.buttons
 ttk::button .c.buttons.apply -text "▶ Apply" -command applystate
-ttk::button .c.buttons.discard -text "✖ Discard" -state disabled
+ttk::button .c.buttons.discard -text "✖ Discard" -command discardstate
 ttk::button .c.buttons.reset -text "↶ Reset scores" -state disabled
 ttk::button .c.buttons.swap -text "⇄ Swap players" -state disabled
 ttk::label .c.status -textvariable mainstatus
@@ -163,6 +163,14 @@ proc applystate {} {
     puts $::scoreboard(p2score)
     puts $::scoreboard(p2team)
     update_applied_state
+}
+
+
+proc discardstate {} {
+    foreach key [array names ::scoreboard] {
+        set ::scoreboard($key) $::applied_scoreboard($key)
+        ::checkdiff "" $key ""
+    }
 }
 
 proc update_applied_state {} {
