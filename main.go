@@ -83,11 +83,8 @@ func startGUI() {
 	state := initState()
 
 	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
-	fmt.Fprintf(stdin, "seticon %s\n", b64icon)
 
-	fmt.Fprintf(stdin, "set mainstatus \"Point your OBS browser source to http://localhost:%s\"\n", WebPort)
-
-	fmt.Fprintln(stdin, "readstate")
+	fmt.Fprintf(stdin, "initialize %s %s\n", b64icon, WebPort)
 
 	scanner := bufio.NewScanner(stdout)
 
@@ -129,9 +126,6 @@ func startGUI() {
 			state.P2score, _ = strconv.Atoi(next())
 			state.P2team = next()
 			state.Write()
-
-		default:
-			println("Skipping bogus command: " + req)
 		}
 	}
 

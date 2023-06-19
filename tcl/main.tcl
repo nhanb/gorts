@@ -88,9 +88,15 @@ grid columnconfigure .c.players 2 -pad 5
 grid columnconfigure .c.buttons 1 -pad 15
 grid columnconfigure .c.buttons 3 -pad 15
 
-
 # The following procs constitute a very simple line-based IPC system where Tcl
 # client talks to Go server via stdin/stdout.
+
+proc initialize {b64icon webport} {
+    seticon $b64icon
+    set ::mainstatus "Point your OBS browser source to http://localhost:${webport}"
+    readstate
+    setupdiffcheck
+}
 
 proc seticon {b64data} {
     image create photo applicationIcon -data [
@@ -101,46 +107,136 @@ proc seticon {b64data} {
 
 proc readstate {} {
     puts "readstate"
-    variable description
-    variable p1name
-    variable p1country
-    variable p1score
-    variable p1team
-    variable p2name
-    variable p2country
-    variable p2score
-    variable p2team
-    set description [gets stdin]
-    set p1name [gets stdin]
-    set p1country [gets stdin]
-    set p1score [gets stdin]
-    set p1team [gets stdin]
-    set p2name [gets stdin]
-    set p2country [gets stdin]
-    set p2score [gets stdin]
-    set p2team [gets stdin]
+    set ::description [gets stdin]
+    set ::p1name [gets stdin]
+    set ::p1country [gets stdin]
+    set ::p1score [gets stdin]
+    set ::p1team [gets stdin]
+    set ::p2name [gets stdin]
+    set ::p2country [gets stdin]
+    set ::p2score [gets stdin]
+    set ::p2team [gets stdin]
+    update_applied_state
 }
 
 proc applystate {} {
     puts "applystate"
-    variable description
-    variable p1name
-    variable p1country
-    variable p1score
-    variable p1team
-    variable p2name
-    variable p2country
-    variable p2score
-    variable p2team
-    puts $description
-    puts $p1name
-    puts $p1country
-    puts $p1score
-    puts $p1team
-    puts $p2name
-    puts $p2country
-    puts $p2score
-    puts $p2team
+    puts $::description
+    puts $::p1name
+    puts $::p1country
+    puts $::p1score
+    puts $::p1team
+    puts $::p2name
+    puts $::p2country
+    puts $::p2score
+    puts $::p2team
+    update_applied_state
+}
+
+set ::checkfunctions {}
+proc update_applied_state {} {
+    set ::applied_description $::description
+    set ::applied_p1name $::p1name
+    set ::applied_p1country $::p1country
+    set ::applied_p1score $::p1score
+    set ::applied_p1team $::p1team
+    set ::applied_p2name $::p2name
+    set ::applied_p2country $::p2country
+    set ::applied_p2score $::p2score
+    set ::applied_p2team $::p2team
+    foreach f $::checkfunctions { $f "" "" "" }
+}
+
+proc setupdiffcheck {} {
+    # Define styling for "dirty"
+    foreach x {TEntry TCombobox TSpinbox} {
+        ttk::style configure Dirty.${x} -fieldbackground #dffcde
+    }
+
+    # I _really_ need to properly learn how scopes and variables work
+    proc checkdescription {_ _ _} {
+        if {$::description == $::applied_description} {
+            .c.description.entry configure -style TEntry
+        } else {
+            .c.description.entry configure -style Dirty.TEntry
+        }
+    }
+    proc checkp1name {_ _ _} {
+        if {$::p1name == $::applied_p1name} {
+            .c.players.p1name configure -style TCombobox
+        } else {
+            .c.players.p1name configure -style Dirty.TCombobox
+        }
+    }
+    proc checkp1country {_ _ _} {
+        if {$::p1country == $::applied_p1country} {
+            .c.players.p1country configure -style TCombobox
+        } else {
+            .c.players.p1country configure -style Dirty.TCombobox
+        }
+    }
+    proc checkp1score {_ _ _} {
+        if {$::p1score == $::applied_p1score} {
+            .c.players.p1score configure -style TSpinbox
+        } else {
+            .c.players.p1score configure -style Dirty.TSpinbox
+        }
+    }
+    proc checkp1team {_ _ _} {
+        if {$::p1team == $::applied_p1team} {
+            .c.players.p1team configure -style TCombobox
+        } else {
+            .c.players.p1team configure -style Dirty.TCombobox
+        }
+    }
+    proc checkp2name {_ _ _} {
+        if {$::p2name == $::applied_p2name} {
+            .c.players.p2name configure -style TCombobox
+        } else {
+            .c.players.p2name configure -style Dirty.TCombobox
+        }
+    }
+    proc checkp2country {_ _ _} {
+        if {$::p2country == $::applied_p2country} {
+            .c.players.p2country configure -style TCombobox
+        } else {
+            .c.players.p2country configure -style Dirty.TCombobox
+        }
+    }
+    proc checkp2score {_ _ _} {
+        if {$::p2score == $::applied_p2score} {
+            .c.players.p2score configure -style TSpinbox
+        } else {
+            .c.players.p2score configure -style Dirty.TSpinbox
+        }
+    }
+    proc checkp2team {_ _ _} {
+        if {$::p2team == $::applied_p2team} {
+            .c.players.p2team configure -style TCombobox
+        } else {
+            .c.players.p2team configure -style Dirty.TCombobox
+        }
+    }
+    trace add variable ::description write checkdescription
+    trace add variable ::p1name write checkp1name
+    trace add variable ::p1country write checkp1country
+    trace add variable ::p1score write checkp1score
+    trace add variable ::p1team write checkp1team
+    trace add variable ::p2name write checkp2name
+    trace add variable ::p2country write checkp2country
+    trace add variable ::p2score write checkp2score
+    trace add variable ::p2team write checkp2team
+    set ::checkfunctions {
+        checkdescription
+        checkp1name
+        checkp1country
+        checkp1score
+        checkp1team
+        checkp2name
+        checkp2country
+        checkp2score
+        checkp2team
+    }
 }
 
 
