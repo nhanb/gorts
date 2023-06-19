@@ -1,9 +1,12 @@
-# tclkit on Windows defaults to cp1252 encoding which will mangle utf-8
-# source code, so let's give it no chance to fuck up:
+# Tcl on Windows has unfortunate defaults:
+#   - cp1252 encoding, which will mangle utf-8 source code
+#   - crlf linebreaks instead of unix-style lf
+# Let's be consistent cross-platform to avoid surprises:
 encoding system "utf-8"
-fconfigure stdin -encoding "utf-8"
-fconfigure stdout -encoding "utf-8"
-fconfigure stderr -encoding "utf-8"
+foreach p {stdin stdout stderr} {
+    fconfigure $p -encoding "utf-8"
+    fconfigure $p -translation lf
+}
 
 package require Tk
 
