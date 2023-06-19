@@ -107,6 +107,7 @@ func startGUI() {
 		case "readstate":
 			// TODO: there must be a more... civilized way.
 			respond(state.Description)
+			respond(state.Subtitle)
 			respond(state.P1name)
 			respond(state.P1country)
 			respond(strconv.Itoa(state.P1score))
@@ -117,6 +118,7 @@ func startGUI() {
 			respond(state.P2team)
 		case "applystate":
 			state.Description = next()
+			state.Subtitle = next()
 			state.P1name = next()
 			state.P1country = next()
 			state.P1score, _ = strconv.Atoi(next())
@@ -138,6 +140,7 @@ func startGUI() {
 
 type State struct {
 	Description string `json:"description"`
+	Subtitle    string `json:"subtitle"`
 	P1name      string `json:"p1name"`
 	P1country   string `json:"p1country"`
 	P1score     int    `json:"p1score"`

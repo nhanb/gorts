@@ -29,6 +29,7 @@ wm protocol . WM_DELETE_WINDOW {
 # Data that we send to the actual web-based overlay:
 array set scoreboard {
     description ""
+    subtitle ""
     p1name ""
     p1country ""
     p1score 0
@@ -48,6 +49,7 @@ foreach key [array names scoreboard] {
 
 array set var_to_widget {
     description .c.description.entry
+    subtitle .c.subtitle.entry
     p1name .c.players.p1name
     p1country .c.players.p1country
     p1score .c.players.p1score
@@ -62,8 +64,11 @@ array set var_to_widget {
 
 ttk::frame .c -padding 5
 ttk::frame .c.description
-ttk::label .c.description.lbl -text "Match description"
+ttk::label .c.description.lbl -text "Title"
 ttk::entry .c.description.entry -textvariable scoreboard(description)
+ttk::frame .c.subtitle
+ttk::label .c.subtitle.lbl -text "Subtitle"
+ttk::entry .c.subtitle.entry -textvariable scoreboard(subtitle)
 ttk::frame .c.players
 ttk::label .c.players.p1lbl -text "Player 1"
 ttk::combobox .c.players.p1name -textvariable scoreboard(p1name) -width 35
@@ -101,7 +106,11 @@ grid .c.description -row 0 -column 0 -sticky NESW -pady {0 5}
 grid .c.description.lbl -row 0 -column 0 -padx {0 5}
 grid .c.description.entry -row 0 -column 1 -sticky EW
 grid columnconfigure .c.description 1 -weight 1
-grid .c.players -row 1 -column 0
+grid .c.subtitle -row 1 -column 0 -sticky NESW -pady {0 5}
+grid .c.subtitle.lbl -row 0 -column 0 -padx {0 5}
+grid .c.subtitle.entry -row 0 -column 1 -sticky EW
+grid columnconfigure .c.subtitle 1 -weight 1
+grid .c.players -row 2 -column 0
 grid .c.players.p1lbl -row 0 -column 0
 grid .c.players.p1name -row 0 -column 1
 grid .c.players.p1country -row 0 -column 2
@@ -117,12 +126,12 @@ grid .c.players.p2score -row 3 -column 3
 grid .c.players.p2win -row 3 -column 4 -padx {5 0} -rowspan 2 -sticky NS
 grid .c.players.p2teamlbl -row 4 -column 0
 grid .c.players.p2team -row 4 -column 1 -columnspan 3 -sticky EW
-grid .c.buttons -row 2 -column 0 -sticky W -pady {10 0}
+grid .c.buttons -row 3 -column 0 -sticky W -pady {10 0}
 grid .c.buttons.apply -row 0 -column 0
 grid .c.buttons.discard -row 0 -column 1
 grid .c.buttons.reset -row 0 -column 2
 grid .c.buttons.swap -row 0 -column 3
-grid .c.status -row 3 -column 0 -columnspan 5 -pady {10 0} -sticky EW
+grid .c.status -row 4 -column 0 -columnspan 5 -pady {10 0} -sticky EW
 
 grid columnconfigure .c.players 2 -pad 5
 grid columnconfigure .c.buttons 1 -pad 15
@@ -148,6 +157,7 @@ proc seticon {b64data} {
 proc readstate {} {
     puts "readstate"
     set ::scoreboard(description) [gets stdin]
+    set ::scoreboard(subtitle) [gets stdin]
     set ::scoreboard(p1name) [gets stdin]
     set ::scoreboard(p1country) [gets stdin]
     set ::scoreboard(p1score) [gets stdin]
@@ -162,6 +172,7 @@ proc readstate {} {
 proc applystate {} {
     puts "applystate"
     puts $::scoreboard(description)
+    puts $::scoreboard(subtitle)
     puts $::scoreboard(p1name)
     puts $::scoreboard(p1country)
     puts $::scoreboard(p1score)
