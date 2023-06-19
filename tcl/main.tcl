@@ -149,7 +149,7 @@ proc applystate {} {
 # Minimizing then re-opening it seems to do the trick.
 # This workaround, however, makes the window unfocused on KDE, so
 # let's only use it on Windows.
-if {$tcl_platform(platform) == windows} {
+if {$tcl_platform(platform) == "windows"} {
     wm iconify .
     wm deiconify .
 }
