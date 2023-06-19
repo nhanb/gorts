@@ -27,28 +27,60 @@ wm protocol . WM_DELETE_WINDOW {
     exit 0
 }
 
+# Data that we send to the actual web-based overlay:
+array set scoreboard {
+    description ""
+    p1name ""
+    p1country ""
+    p1score 0
+    p1team ""
+    p2name ""
+    p2country ""
+    p2score 0
+    p2team ""
+}
+
+# $applied_scoreboard represents data that has actually been applied
+# to the overlay. This is used to display diff in the UI, and to restore data
+# when user clicks "Discard".
+foreach key [array names scoreboard] {
+    set applied_scoreboard($key) scoreboard($key)
+}
+
+array set var_to_widget {
+    description .c.description.entry
+    p1name .c.players.p1name
+    p1country .c.players.p1country
+    p1score .c.players.p1score
+    p1team .c.players.p1team
+    p2name .c.players.p2name
+    p2country .c.players.p2country
+    p2score .c.players.p2score
+    p2team .c.players.p2team
+}
+
 # GUI
 
 ttk::frame .c -padding 5
 ttk::frame .c.description
 ttk::label .c.description.lbl -text "Match description"
-ttk::entry .c.description.entry -textvariable description
+ttk::entry .c.description.entry -textvariable scoreboard(description)
 ttk::frame .c.players
 ttk::label .c.players.p1lbl -text "Player 1"
-ttk::combobox .c.players.p1name -textvariable p1name -width 35
-ttk::combobox .c.players.p1country -textvariable p1country -width 5
-ttk::spinbox .c.players.p1score -textvariable p1score -from 0 -to 999 -width 4
+ttk::combobox .c.players.p1name -textvariable scoreboard(p1name) -width 35
+ttk::combobox .c.players.p1country -textvariable scoreboard(p1country) -width 5
+ttk::spinbox .c.players.p1score -textvariable scoreboard(p1score) -from 0 -to 999 -width 4
 ttk::button .c.players.p1win -text "▲ Win" -width 6 -state disabled
 ttk::label .c.players.p1teamlbl -text "Team 1"
-ttk::combobox .c.players.p1team -textvariable p1team
+ttk::combobox .c.players.p1team -textvariable scoreboard(p1team)
 ttk::separator .c.players.separator -orient horizontal
 ttk::label .c.players.p2lbl -text "Player 2"
-ttk::combobox .c.players.p2name -textvariable p2name -width 35
-ttk::combobox .c.players.p2country -textvariable p2country -width 5
-ttk::spinbox .c.players.p2score -textvariable p2score -from 0 -to 999 -width 4
+ttk::combobox .c.players.p2name -textvariable scoreboard(p2name) -width 35
+ttk::combobox .c.players.p2country -textvariable scoreboard(p2country) -width 5
+ttk::spinbox .c.players.p2score -textvariable scoreboard(p2score) -from 0 -to 999 -width 4
 ttk::button .c.players.p2win -text "▲ Win" -width 6 -state disabled
 ttk::label .c.players.p2teamlbl -text "Team 2"
-ttk::combobox .c.players.p2team -textvariable p2team
+ttk::combobox .c.players.p2team -textvariable scoreboard(p2team)
 ttk::frame .c.buttons
 ttk::button .c.buttons.apply -text "▶ Apply" -command applystate
 ttk::button .c.buttons.discard -text "✖ Discard" -state disabled
@@ -107,138 +139,56 @@ proc seticon {b64data} {
 
 proc readstate {} {
     puts "readstate"
-    set ::description [gets stdin]
-    set ::p1name [gets stdin]
-    set ::p1country [gets stdin]
-    set ::p1score [gets stdin]
-    set ::p1team [gets stdin]
-    set ::p2name [gets stdin]
-    set ::p2country [gets stdin]
-    set ::p2score [gets stdin]
-    set ::p2team [gets stdin]
+    set ::scoreboard(description) [gets stdin]
+    set ::scoreboard(p1name) [gets stdin]
+    set ::scoreboard(p1country) [gets stdin]
+    set ::scoreboard(p1score) [gets stdin]
+    set ::scoreboard(p1team) [gets stdin]
+    set ::scoreboard(p2name) [gets stdin]
+    set ::scoreboard(p2country) [gets stdin]
+    set ::scoreboard(p2score) [gets stdin]
+    set ::scoreboard(p2team) [gets stdin]
     update_applied_state
 }
 
 proc applystate {} {
     puts "applystate"
-    puts $::description
-    puts $::p1name
-    puts $::p1country
-    puts $::p1score
-    puts $::p1team
-    puts $::p2name
-    puts $::p2country
-    puts $::p2score
-    puts $::p2team
+    puts $::scoreboard(description)
+    puts $::scoreboard(p1name)
+    puts $::scoreboard(p1country)
+    puts $::scoreboard(p1score)
+    puts $::scoreboard(p1team)
+    puts $::scoreboard(p2name)
+    puts $::scoreboard(p2country)
+    puts $::scoreboard(p2score)
+    puts $::scoreboard(p2team)
     update_applied_state
 }
 
-set ::checkfunctions {}
 proc update_applied_state {} {
-    set ::applied_description $::description
-    set ::applied_p1name $::p1name
-    set ::applied_p1country $::p1country
-    set ::applied_p1score $::p1score
-    set ::applied_p1team $::p1team
-    set ::applied_p2name $::p2name
-    set ::applied_p2country $::p2country
-    set ::applied_p2score $::p2score
-    set ::applied_p2team $::p2team
-    foreach f $::checkfunctions { $f "" "" "" }
+    foreach key [array names ::scoreboard] {
+        set ::applied_scoreboard($key) $::scoreboard($key)
+        ::checkdiff "" $key ""
+    }
 }
 
 proc setupdiffcheck {} {
     # Define styling for "dirty"
     foreach x {TEntry TCombobox TSpinbox} {
-        ttk::style configure Dirty.${x} -fieldbackground #dffcde
+        ttk::style configure "Dirty.$x" -fieldbackground #dffcde
     }
 
-    # I _really_ need to properly learn how scopes and variables work
-    proc checkdescription {_ _ _} {
-        if {$::description == $::applied_description} {
-            .c.description.entry configure -style TEntry
-        } else {
-            .c.description.entry configure -style Dirty.TEntry
-        }
-    }
-    proc checkp1name {_ _ _} {
-        if {$::p1name == $::applied_p1name} {
-            .c.players.p1name configure -style TCombobox
-        } else {
-            .c.players.p1name configure -style Dirty.TCombobox
-        }
-    }
-    proc checkp1country {_ _ _} {
-        if {$::p1country == $::applied_p1country} {
-            .c.players.p1country configure -style TCombobox
-        } else {
-            .c.players.p1country configure -style Dirty.TCombobox
-        }
-    }
-    proc checkp1score {_ _ _} {
-        if {$::p1score == $::applied_p1score} {
-            .c.players.p1score configure -style TSpinbox
-        } else {
-            .c.players.p1score configure -style Dirty.TSpinbox
-        }
-    }
-    proc checkp1team {_ _ _} {
-        if {$::p1team == $::applied_p1team} {
-            .c.players.p1team configure -style TCombobox
-        } else {
-            .c.players.p1team configure -style Dirty.TCombobox
-        }
-    }
-    proc checkp2name {_ _ _} {
-        if {$::p2name == $::applied_p2name} {
-            .c.players.p2name configure -style TCombobox
-        } else {
-            .c.players.p2name configure -style Dirty.TCombobox
-        }
-    }
-    proc checkp2country {_ _ _} {
-        if {$::p2country == $::applied_p2country} {
-            .c.players.p2country configure -style TCombobox
-        } else {
-            .c.players.p2country configure -style Dirty.TCombobox
-        }
-    }
-    proc checkp2score {_ _ _} {
-        if {$::p2score == $::applied_p2score} {
-            .c.players.p2score configure -style TSpinbox
-        } else {
-            .c.players.p2score configure -style Dirty.TSpinbox
-        }
-    }
-    proc checkp2team {_ _ _} {
-        if {$::p2team == $::applied_p2team} {
-            .c.players.p2team configure -style TCombobox
-        } else {
-            .c.players.p2team configure -style Dirty.TCombobox
-        }
-    }
-    trace add variable ::description write checkdescription
-    trace add variable ::p1name write checkp1name
-    trace add variable ::p1country write checkp1country
-    trace add variable ::p1score write checkp1score
-    trace add variable ::p1team write checkp1team
-    trace add variable ::p2name write checkp2name
-    trace add variable ::p2country write checkp2country
-    trace add variable ::p2score write checkp2score
-    trace add variable ::p2team write checkp2team
-    set ::checkfunctions {
-        checkdescription
-        checkp1name
-        checkp1country
-        checkp1score
-        checkp1team
-        checkp2name
-        checkp2country
-        checkp2score
-        checkp2team
-    }
+    trace add variable ::scoreboard write ::checkdiff
 }
 
+proc checkdiff {_ key _} {
+    set widget $::var_to_widget($key)
+    if {$::scoreboard($key) == $::applied_scoreboard($key)} {
+        $widget configure -style [winfo class $widget]
+    } else {
+        $widget configure -style "Dirty.[winfo class $widget]"
+    }
+}
 
 # By default this window is not focused and not even brought to
 # foreground on Windows. I suspect it's because tcl is exec'ed from Go.
