@@ -53,4 +53,16 @@ PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program.  If not, see <https://www.gnu.org/licenses/>.
 
+# Dev notes
+
+Tcl options on Windows:
+
+- [TclKits](https://tclkits.rkeene.org/fossil/wiki/Downloads): single 5.8MiB
+  binary <== currently used
+- [IronTcl](https://www.irontcl.com): 14.5Mib folder unzipped
+- Manually compile? TODO
+
+Web server should probably read state from memory instead of disk (state.json).
+Sounds like premature optimization though.
+
 [1]: https://github.com/nhanb/orts
