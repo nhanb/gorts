@@ -1,2 +1,4 @@
 /dist
 /web/state.json
+/players.csv
+/creds*
