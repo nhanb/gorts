@@ -59,10 +59,23 @@ func startGUI() {
 		panic(err)
 	}
 
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		panic(err)
+	}
+
 	err = cmd.Start()
 	if err != nil {
 		panic(err)
 	}
+
+	go func() {
+		errscanner := bufio.NewScanner(stderr)
+		for errscanner.Scan() {
+			errtext := errscanner.Text()
+			fmt.Printf("~~> %s\n", errtext)
+		}
+	}()
 
 	fmt.Fprintln(stdin, mainTcl)
 	println("Loaded main tcl script.")
@@ -81,18 +94,18 @@ func startGUI() {
 	next := func() string {
 		scanner.Scan()
 		v := scanner.Text()
-		println("=>", v)
+		println("==>", v)
 		return v
 	}
 
 	respond := func(s string) {
-		println("<=", s)
+		println("<==", s)
 		io.WriteString(stdin, s+"\n")
 	}
 
 	for scanner.Scan() {
 		req := scanner.Text()
-		println("=> " + req)
+		println("==> " + req)
 		switch req {
 		case "readstate":
 			// TODO: there must be a more... civilized way.
