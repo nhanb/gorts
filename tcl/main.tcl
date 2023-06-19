@@ -70,7 +70,7 @@ ttk::label .c.players.p1lbl -text "Player 1"
 ttk::combobox .c.players.p1name -textvariable scoreboard(p1name) -width 35
 ttk::combobox .c.players.p1country -textvariable scoreboard(p1country) -width 5
 ttk::spinbox .c.players.p1score -textvariable scoreboard(p1score) -from 0 -to 999 -width 4
-ttk::button .c.players.p1win -text "▲ Win" -width 6 -state disabled
+ttk::button .c.players.p1win -text "▲ Win" -width 6 -command {incr scoreboard(p1score)}
 ttk::label .c.players.p1teamlbl -text "Team 1"
 ttk::combobox .c.players.p1team -textvariable scoreboard(p1team)
 ttk::separator .c.players.separator -orient horizontal
@@ -78,14 +78,23 @@ ttk::label .c.players.p2lbl -text "Player 2"
 ttk::combobox .c.players.p2name -textvariable scoreboard(p2name) -width 35
 ttk::combobox .c.players.p2country -textvariable scoreboard(p2country) -width 5
 ttk::spinbox .c.players.p2score -textvariable scoreboard(p2score) -from 0 -to 999 -width 4
-ttk::button .c.players.p2win -text "▲ Win" -width 6 -state disabled
+ttk::button .c.players.p2win -text "▲ Win" -width 6 -command {incr scoreboard(p2score)}
 ttk::label .c.players.p2teamlbl -text "Team 2"
 ttk::combobox .c.players.p2team -textvariable scoreboard(p2team)
 ttk::frame .c.buttons
 ttk::button .c.buttons.apply -text "▶ Apply" -command applystate
 ttk::button .c.buttons.discard -text "✖ Discard" -command discardstate
-ttk::button .c.buttons.reset -text "↶ Reset scores" -state disabled
-ttk::button .c.buttons.swap -text "⇄ Swap players" -state disabled
+ttk::button .c.buttons.reset -text "↶ Reset scores" -command {
+    set scoreboard(p1score) 0
+    set scoreboard(p2score) 0
+}
+ttk::button .c.buttons.swap -text "⇄ Swap players" -command {
+    foreach key {name country score team} {
+        set tmp $scoreboard(p1$key)
+        set scoreboard(p1$key) $scoreboard(p2$key)
+        set scoreboard(p2$key) $tmp
+    }
+}
 ttk::label .c.status -textvariable mainstatus
 
 grid .c -row 0 -column 0 -sticky NESW
