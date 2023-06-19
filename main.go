@@ -73,7 +73,7 @@ func startGUI() {
 		errscanner := bufio.NewScanner(stderr)
 		for errscanner.Scan() {
 			errtext := errscanner.Text()
-			fmt.Printf("~~> %s\n", errtext)
+			fmt.Printf("XXX %s\n", errtext)
 		}
 	}()
 
@@ -91,18 +91,18 @@ func startGUI() {
 	next := func() string {
 		scanner.Scan()
 		v := scanner.Text()
-		println("==>", v)
+		println("-->", v)
 		return v
 	}
 
 	respond := func(s string) {
-		println("<==", s)
+		println("<--", s)
 		io.WriteString(stdin, s+"\n")
 	}
 
 	for scanner.Scan() {
 		req := scanner.Text()
-		println("==> " + req)
+		println("--> " + req)
 		switch req {
 		case "readstate":
 			// TODO: there must be a more... civilized way.
