@@ -55,5 +55,5 @@ func normalize(in string) (out string) {
 }
 
 func (p *Player) MatchesName(query string) bool {
-	return normalize(query) == normalize(p.Name)
+	return strings.Contains(normalize(p.Name), normalize(query))
 }
