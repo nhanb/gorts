@@ -131,6 +131,8 @@ grid .c.status -row 4 -column 0 -columnspan 5 -pady {10 0} -sticky EW
 grid columnconfigure .c.players 2 -pad 5
 grid columnconfigure .c.buttons 1 -pad 15
 grid columnconfigure .c.buttons 3 -pad 15
+grid rowconfigure .c.players 1 -pad 5
+grid rowconfigure .c.players 3 -pad 5
 
 # The following procs constitute a very simple line-based IPC system where Tcl
 # client talks to Go server via stdin/stdout.
