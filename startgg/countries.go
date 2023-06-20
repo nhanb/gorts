@@ -1,10 +1,16 @@
 package startgg
 
+import (
+	"sort"
+
+	"golang.org/x/exp/maps"
+)
+
 // Startgg only shows (non-standard) country names (ongoing problem for years,
 // probably will never be fixed), so we need this mapping to convert these
 // names to alpha-2 codes.
 // From https://gist.github.com/morleym/a39c43f6544a350c109c5f7b0b055155
-var nameToCode = map[string]string{
+var countryNameToCode = map[string]string{
 	"Bangladesh":                         "bd",
 	"Belgium":                            "be",
 	"Burkina Faso":                       "bf",
@@ -259,4 +265,10 @@ var nameToCode = map[string]string{
 	"Mozambique":                           "mz",
 	"Wales":                                "gb-wls",
 	"Scotland":                             "gb-sct",
+}
+
+var CountryCodes []string = maps.Values(countryNameToCode)
+
+func init() {
+	sort.Strings(CountryCodes)
 }

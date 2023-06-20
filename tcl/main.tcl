@@ -135,11 +135,14 @@ grid columnconfigure .c.buttons 3 -pad 15
 # The following procs constitute a very simple line-based IPC system where Tcl
 # client talks to Go server via stdin/stdout.
 
-proc initialize {b64icon webport} {
+proc initialize {b64icon webport countrycodes} {
     seticon $b64icon
     set ::mainstatus "Point your OBS browser source to http://localhost:${webport}"
     readstate
     setupdiffcheck
+
+    .c.players.p1country configure -values $countrycodes
+    .c.players.p2country configure -values $countrycodes
 }
 
 proc seticon {b64data} {

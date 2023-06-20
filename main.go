@@ -14,6 +14,9 @@ import (
 	"os/exec"
 	"runtime"
 	"strconv"
+	"strings"
+
+	"go.imnhan.com/gorts/startgg"
 )
 
 const WebPort = "1337"
@@ -84,7 +87,11 @@ func startGUI() {
 
 	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
 
-	fmt.Fprintf(stdin, "initialize %s %s\n", b64icon, WebPort)
+	fmt.Fprintf(
+		stdin,
+		"initialize %s %s {%s}\n",
+		b64icon, WebPort, strings.Join(startgg.CountryCodes, " "),
+	)
 
 	scanner := bufio.NewScanner(stdout)
 
