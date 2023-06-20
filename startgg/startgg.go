@@ -7,21 +7,18 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"go.imnhan.com/gorts/players"
 )
 
 const STARTGG_URL = "https://api.start.gg/gql/alpha"
-
-type Player struct {
-	GamerTag string
-	Prefix   string
-}
 
 type GraphQL struct {
 	Query     string   `json:"query"`
 	Variables struct{} `json:"variables"`
 }
 
-func FetchPlayers(token string, tourneySlug string) ([]Player, error) {
+func FetchPlayers(token string, tourneySlug string) ([]players.Player, error) {
 	query := `
 {
   tournament(slug: "%s") {

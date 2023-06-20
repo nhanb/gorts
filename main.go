@@ -16,12 +16,14 @@ import (
 	"strconv"
 	"strings"
 
+	"go.imnhan.com/gorts/players"
 	"go.imnhan.com/gorts/startgg"
 )
 
 const WebPort = "1337"
 const WebDir = "web"
 const StateFile = WebDir + "/state.json"
+const PlayersFile = "players.csv"
 
 //go:embed tcl/main.tcl
 var mainTcl string
@@ -84,7 +86,6 @@ func startGUI() {
 	println("Loaded main tcl script.")
 
 	state := initState()
-
 	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
 
 	fmt.Fprintf(
@@ -123,6 +124,7 @@ func startGUI() {
 			respond(state.P2country)
 			respond(strconv.Itoa(state.P2score))
 			respond(state.P2team)
+
 		case "applystate":
 			state.Description = next()
 			state.Subtitle = next()
@@ -135,6 +137,14 @@ func startGUI() {
 			state.P2score, _ = strconv.Atoi(next())
 			state.P2team = next()
 			state.Write()
+
+		case "readplayernames":
+			players := players.FromFile(PlayersFile)
+			for _, player := range players {
+				respond(player.Name)
+			}
+			respond("end")
+
 		}
 	}
 

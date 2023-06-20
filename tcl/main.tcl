@@ -143,6 +143,8 @@ proc initialize {b64icon webport countrycodes} {
 
     .c.players.p1country configure -values $countrycodes
     .c.players.p2country configure -values $countrycodes
+
+    readplayernames
 }
 
 proc seticon {b64data} {
@@ -182,6 +184,17 @@ proc applystate {} {
     update_applied_state
 }
 
+proc readplayernames {} {
+    set playernames {}
+    puts "readplayernames"
+    set line [gets stdin]
+    while {$line != "end"} {
+        lappend playernames $line
+        set line [gets stdin]
+    }
+    .c.players.p1name configure -values $playernames
+    .c.players.p2name configure -values $playernames
+}
 
 proc discardstate {} {
     foreach key [array names ::scoreboard] {
