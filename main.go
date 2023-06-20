@@ -15,6 +15,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"go.imnhan.com/gorts/players"
 	"go.imnhan.com/gorts/startgg"
@@ -24,6 +25,7 @@ const WebPort = "1337"
 const WebDir = "web"
 const ScoreboardFile = WebDir + "/state.json"
 const PlayersFile = "players.csv"
+const StartggFile = "creds-start.gg"
 
 //go:embed tcl/main.tcl
 var mainTcl string
@@ -88,11 +90,16 @@ func startGUI() {
 	allplayers := players.FromFile(PlayersFile)
 	scoreboard := initScoreboard()
 	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
+	startggInputs := startgg.LoadInputs(StartggFile)
 
 	fmt.Fprintf(
 		stdin,
-		"initialize %s %s {%s}\n",
-		b64icon, WebPort, strings.Join(startgg.CountryCodes, " "),
+		"initialize %s %s {%s} %s %s\n",
+		b64icon,
+		WebPort,
+		strings.Join(startgg.CountryCodes, " "),
+		startggInputs.Token,
+		startggInputs.Slug,
 	)
 
 	scanner := bufio.NewScanner(stdout)
@@ -162,6 +169,14 @@ func startGUI() {
 				}
 			}
 			respond("end")
+
+		case "fetchplayers":
+			startggInputs.Token = next()
+			startggInputs.Slug = next()
+			time.Sleep(3 * time.Second)
+			respond("fetchplayers__resp")
+			respond("All done.")
+			startggInputs.Write(StartggFile)
 		}
 
 	}

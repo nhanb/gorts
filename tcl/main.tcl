@@ -43,106 +43,137 @@ foreach key [array names scoreboard] {
 }
 
 array set var_to_widget {
-    description .c.description.entry
-    subtitle .c.subtitle.entry
-    p1name .c.players.p1name
-    p1country .c.players.p1country
-    p1score .c.players.p1score
-    p1team .c.players.p1team
-    p2name .c.players.p2name
-    p2country .c.players.p2country
-    p2score .c.players.p2score
-    p2team .c.players.p2team
+    description .n.m.description.entry
+    subtitle .n.m.subtitle.entry
+    p1name .n.m.players.p1name
+    p1country .n.m.players.p1country
+    p1score .n.m.players.p1score
+    p1team .n.m.players.p1team
+    p2name .n.m.players.p2name
+    p2country .n.m.players.p2country
+    p2score .n.m.players.p2score
+    p2team .n.m.players.p2team
 }
 
-# GUI
+array set startgg {
+    token ""
+    slug ""
+    msg ""
+}
 
-ttk::frame .c -padding 5
-ttk::frame .c.description
-ttk::label .c.description.lbl -text "Title"
-ttk::entry .c.description.entry -textvariable scoreboard(description)
-ttk::frame .c.subtitle
-ttk::label .c.subtitle.lbl -text "Subtitle"
-ttk::entry .c.subtitle.entry -textvariable scoreboard(subtitle)
-ttk::frame .c.players
-ttk::label .c.players.p1lbl -text "Player 1"
-ttk::combobox .c.players.p1name -textvariable scoreboard(p1name) -width 35
-ttk::combobox .c.players.p1country -textvariable scoreboard(p1country) -width 5
-ttk::spinbox .c.players.p1score -textvariable scoreboard(p1score) -from 0 -to 999 -width 4
-ttk::button .c.players.p1win -text "▲ Win" -width 6 -command {incr scoreboard(p1score)}
-ttk::label .c.players.p1teamlbl -text "Team 1"
-ttk::combobox .c.players.p1team -textvariable scoreboard(p1team)
-ttk::separator .c.players.separator -orient horizontal
-ttk::label .c.players.p2lbl -text "Player 2"
-ttk::combobox .c.players.p2name -textvariable scoreboard(p2name) -width 35
-ttk::combobox .c.players.p2country -textvariable scoreboard(p2country) -width 5
-ttk::spinbox .c.players.p2score -textvariable scoreboard(p2score) -from 0 -to 999 -width 4
-ttk::button .c.players.p2win -text "▲ Win" -width 6 -command {incr scoreboard(p2score)}
-ttk::label .c.players.p2teamlbl -text "Team 2"
-ttk::combobox .c.players.p2team -textvariable scoreboard(p2team)
-ttk::frame .c.buttons
-ttk::button .c.buttons.apply -text "▶ Apply" -command applyscoreboard
-ttk::button .c.buttons.discard -text "✖ Discard" -command discardscoreboard
-ttk::button .c.buttons.reset -text "↶ Reset scores" -command {
+# GUI has 2 tabs: Main (.n.m) and start.gg (.n.s)
+
+ttk::notebook .n
+ttk::frame .n.m -padding 5
+ttk::frame .n.s -padding 5
+.n add .n.m -text Main
+.n add .n.s -text start.gg
+grid .n -column 0 -row 0 -sticky NESW -padx 3 -pady 3
+
+# Main tab:
+
+ttk::frame .n.m.description
+ttk::label .n.m.description.lbl -text "Title"
+ttk::entry .n.m.description.entry -textvariable scoreboard(description)
+ttk::frame .n.m.subtitle
+ttk::label .n.m.subtitle.lbl -text "Subtitle"
+ttk::entry .n.m.subtitle.entry -textvariable scoreboard(subtitle)
+ttk::frame .n.m.players
+ttk::label .n.m.players.p1lbl -text "Player 1"
+ttk::combobox .n.m.players.p1name -textvariable scoreboard(p1name) -width 35
+ttk::combobox .n.m.players.p1country -textvariable scoreboard(p1country) -width 5
+ttk::spinbox .n.m.players.p1score -textvariable scoreboard(p1score) -from 0 -to 999 -width 4
+ttk::button .n.m.players.p1win -text "▲ Win" -width 6 -command {incr scoreboard(p1score)}
+ttk::label .n.m.players.p1teamlbl -text "Team 1"
+ttk::combobox .n.m.players.p1team -textvariable scoreboard(p1team)
+ttk::separator .n.m.players.separator -orient horizontal
+ttk::label .n.m.players.p2lbl -text "Player 2"
+ttk::combobox .n.m.players.p2name -textvariable scoreboard(p2name) -width 35
+ttk::combobox .n.m.players.p2country -textvariable scoreboard(p2country) -width 5
+ttk::spinbox .n.m.players.p2score -textvariable scoreboard(p2score) -from 0 -to 999 -width 4
+ttk::button .n.m.players.p2win -text "▲ Win" -width 6 -command {incr scoreboard(p2score)}
+ttk::label .n.m.players.p2teamlbl -text "Team 2"
+ttk::combobox .n.m.players.p2team -textvariable scoreboard(p2team)
+ttk::frame .n.m.buttons
+ttk::button .n.m.buttons.apply -text "▶ Apply" -command applyscoreboard
+ttk::button .n.m.buttons.discard -text "✖ Discard" -command discardscoreboard
+ttk::button .n.m.buttons.reset -text "↶ Reset scores" -command {
     set scoreboard(p1score) 0
     set scoreboard(p2score) 0
 }
-ttk::button .c.buttons.swap -text "⇄ Swap players" -command {
+ttk::button .n.m.buttons.swap -text "⇄ Swap players" -command {
     foreach key {name country score team} {
         set tmp $scoreboard(p1$key)
         set scoreboard(p1$key) $scoreboard(p2$key)
         set scoreboard(p2$key) $tmp
     }
 }
-ttk::label .c.status -textvariable mainstatus
+ttk::label .n.m.status -textvariable mainstatus
+grid .n.m.description -row 0 -column 0 -sticky NESW -pady {0 5}
+grid .n.m.description.lbl -row 0 -column 0 -padx {0 5}
+grid .n.m.description.entry -row 0 -column 1 -sticky EW
+grid columnconfigure .n.m.description 1 -weight 1
+grid .n.m.subtitle -row 1 -column 0 -sticky NESW -pady {0 5}
+grid .n.m.subtitle.lbl -row 0 -column 0 -padx {0 5}
+grid .n.m.subtitle.entry -row 0 -column 1 -sticky EW
+grid columnconfigure .n.m.subtitle 1 -weight 1
+grid .n.m.players -row 2 -column 0
+grid .n.m.players.p1lbl -row 0 -column 0
+grid .n.m.players.p1name -row 0 -column 1
+grid .n.m.players.p1country -row 0 -column 2
+grid .n.m.players.p1score -row 0 -column 3
+grid .n.m.players.p1win -row 0 -column 4 -padx {5 0} -rowspan 2 -sticky NS
+grid .n.m.players.p1teamlbl -row 1 -column 0
+grid .n.m.players.p1team -row 1 -column 1 -columnspan 3 -sticky EW
+grid .n.m.players.separator -row 2 -column 0 -columnspan 5 -pady 10 -sticky EW
+grid .n.m.players.p2lbl -row 3 -column 0
+grid .n.m.players.p2name -row 3 -column 1
+grid .n.m.players.p2country -row 3 -column 2
+grid .n.m.players.p2score -row 3 -column 3
+grid .n.m.players.p2win -row 3 -column 4 -padx {5 0} -rowspan 2 -sticky NS
+grid .n.m.players.p2teamlbl -row 4 -column 0
+grid .n.m.players.p2team -row 4 -column 1 -columnspan 3 -sticky EW
+grid .n.m.buttons -row 3 -column 0 -sticky W -pady {10 0}
+grid .n.m.buttons.apply -row 0 -column 0
+grid .n.m.buttons.discard -row 0 -column 1
+grid .n.m.buttons.reset -row 0 -column 2
+grid .n.m.buttons.swap -row 0 -column 3
+grid .n.m.status -row 4 -column 0 -columnspan 5 -pady {10 0} -sticky EW
+grid columnconfigure .n.m.players 2 -pad 5
+grid columnconfigure .n.m.buttons 1 -pad 15
+grid columnconfigure .n.m.buttons 3 -pad 15
+grid rowconfigure .n.m.players 1 -pad 5
+grid rowconfigure .n.m.players 3 -pad 5
 
-grid .c -row 0 -column 0 -sticky NESW
-grid .c.description -row 0 -column 0 -sticky NESW -pady {0 5}
-grid .c.description.lbl -row 0 -column 0 -padx {0 5}
-grid .c.description.entry -row 0 -column 1 -sticky EW
-grid columnconfigure .c.description 1 -weight 1
-grid .c.subtitle -row 1 -column 0 -sticky NESW -pady {0 5}
-grid .c.subtitle.lbl -row 0 -column 0 -padx {0 5}
-grid .c.subtitle.entry -row 0 -column 1 -sticky EW
-grid columnconfigure .c.subtitle 1 -weight 1
-grid .c.players -row 2 -column 0
-grid .c.players.p1lbl -row 0 -column 0
-grid .c.players.p1name -row 0 -column 1
-grid .c.players.p1country -row 0 -column 2
-grid .c.players.p1score -row 0 -column 3
-grid .c.players.p1win -row 0 -column 4 -padx {5 0} -rowspan 2 -sticky NS
-grid .c.players.p1teamlbl -row 1 -column 0
-grid .c.players.p1team -row 1 -column 1 -columnspan 3 -sticky EW
-grid .c.players.separator -row 2 -column 0 -columnspan 5 -pady 10 -sticky EW
-grid .c.players.p2lbl -row 3 -column 0
-grid .c.players.p2name -row 3 -column 1
-grid .c.players.p2country -row 3 -column 2
-grid .c.players.p2score -row 3 -column 3
-grid .c.players.p2win -row 3 -column 4 -padx {5 0} -rowspan 2 -sticky NS
-grid .c.players.p2teamlbl -row 4 -column 0
-grid .c.players.p2team -row 4 -column 1 -columnspan 3 -sticky EW
-grid .c.buttons -row 3 -column 0 -sticky W -pady {10 0}
-grid .c.buttons.apply -row 0 -column 0
-grid .c.buttons.discard -row 0 -column 1
-grid .c.buttons.reset -row 0 -column 2
-grid .c.buttons.swap -row 0 -column 3
-grid .c.status -row 4 -column 0 -columnspan 5 -pady {10 0} -sticky EW
+# start.gg tab:
 
-grid columnconfigure .c.players 2 -pad 5
-grid columnconfigure .c.buttons 1 -pad 15
-grid columnconfigure .c.buttons 3 -pad 15
-grid rowconfigure .c.players 1 -pad 5
-grid rowconfigure .c.players 3 -pad 5
+.n select .n.s; # for debug only
+ttk::label .n.s.tokenlbl -text "Personal token: "
+ttk::entry .n.s.token -show * -textvariable startgg(token)
+ttk::label .n.s.tournamentlbl -text "Tournament slug: "
+ttk::entry .n.s.tournamentslug -textvariable startgg(slug)
+ttk::button .n.s.fetch -text "Fetch players" -command fetchplayers
+ttk::label .n.s.msg -textvariable startgg(msg)
+
+grid .n.s.tokenlbl -row 0 -column 0 -sticky W
+grid .n.s.token -row 0 -column 1 -sticky EW
+grid .n.s.tournamentlbl -row 1 -column 0 -sticky W
+grid .n.s.tournamentslug -row 1 -column 1 -sticky EW
+grid .n.s.fetch -row 2 -column 1 -stick W
+grid .n.s.msg -row 3 -column 1 -stick W
+grid columnconfigure .n.s 1 -weight 1
+grid rowconfigure .n.s 1 -pad 5
 
 # The following procs constitute a very simple line-based IPC system where Tcl
 # client talks to Go server via stdin/stdout.
 
-proc initialize {b64icon webport countrycodes} {
+proc initialize {b64icon webport countrycodes startgg_token startgg_slug} {
     seticon $b64icon
     set ::mainstatus "Point your OBS browser source to http://localhost:${webport}"
-    .c.players.p1country configure -values $countrycodes
-    .c.players.p2country configure -values $countrycodes
-
+    .n.m.players.p1country configure -values $countrycodes
+    .n.m.players.p2country configure -values $countrycodes
+    set ::startgg(token) $startgg_token
+    set ::startgg(slug) $startgg_slug
     readscoreboard
     setupdiffcheck
     readplayernames
@@ -194,8 +225,8 @@ proc readplayernames {} {
         lappend playernames $line
         set line [gets stdin]
     }
-    .c.players.p1name configure -values $playernames
-    .c.players.p2name configure -values $playernames
+    .n.m.players.p1name configure -values $playernames
+    .n.m.players.p2name configure -values $playernames
 }
 
 proc setupplayersuggestion {} {
@@ -204,7 +235,7 @@ proc setupplayersuggestion {} {
             return
         }
         set newvalue $::scoreboard($key)
-        set widget .c.players.$key
+        set widget .n.m.players.$key
         set matches [searchplayers $newvalue]
         $widget configure -values $matches
     }
@@ -221,6 +252,23 @@ proc searchplayers {query} {
         set line [gets stdin]
     }
     return $playernames
+}
+
+proc fetchplayers {} {
+    .n.s.fetch configure -state disabled
+    .n.s.token configure -state disabled
+    .n.s.tournamentslug configure -state disabled
+    set ::startgg(msg) "Fetching..."
+    puts fetchplayers
+    puts $::startgg(token)
+    puts $::startgg(slug)
+}
+
+proc fetchplayers__resp {} {
+    set ::startgg(msg) [gets stdin]
+    .n.s.fetch configure -state normal
+    .n.s.token configure -state normal
+    .n.s.tournamentslug configure -state normal
 }
 
 proc discardscoreboard {} {
