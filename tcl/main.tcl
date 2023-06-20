@@ -183,14 +183,12 @@ proc applystate {} {
 proc discardstate {} {
     foreach key [array names ::scoreboard] {
         set ::scoreboard($key) $::applied_scoreboard($key)
-        ::checkdiff "" $key ""
     }
 }
 
 proc update_applied_state {} {
     foreach key [array names ::scoreboard] {
         set ::applied_scoreboard($key) $::scoreboard($key)
-        ::checkdiff "" $key ""
     }
 }
 
@@ -201,6 +199,7 @@ proc setupdiffcheck {} {
     }
 
     trace add variable ::scoreboard write ::checkdiff
+    trace add variable ::applied_scoreboard write ::checkdiff
 }
 
 proc checkdiff {_ key _} {
