@@ -1,0 +1,62 @@
+/*
+Lifted from https://gwfh.mranftl.com/fonts
+*/
+
+/* jura-300 - cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Jura";
+  font-style: normal;
+  font-weight: 300;
+  src: url("./fonts/jura-v29-cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese-300.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* jura-regular - cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Jura";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./fonts/jura-v29-cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese-regular.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* jura-500 - cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Jura";
+  font-style: normal;
+  font-weight: 500;
+  src: url("./fonts/jura-v29-cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese-500.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* jura-600 - cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Jura";
+  font-style: normal;
+  font-weight: 600;
+  src: url("./fonts/jura-v29-cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese-600.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* jura-700 - cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Jura";
+  font-style: normal;
+  font-weight: 700;
+  src: url("./fonts/jura-v29-cyrillic_cyrillic-ext_greek_greek-ext_kayah-li_latin_latin-ext_vietnamese-700.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* noto-color-emoji-regular - emoji */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Noto Color Emoji";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./fonts/noto-color-emoji-v25-emoji-regular.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
