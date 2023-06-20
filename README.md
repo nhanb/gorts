@@ -38,6 +38,25 @@ Unzip, run `gorts` from the unzipped directory.
 Proper packaging is not planned because I only develop on Linux and stream on
 Windows. If you want to contribute then I'm happy to give pointers though.
 
+## macOS or any other unix-like
+
+Unplanned but I'm open to paid work.
+
+# Build from source
+
+Can cross-compile from any unix-like. I'm cheating a little though, by
+downloading a prebuilt tcl executable for Windows, and just assume Linux users
+have already installed tcl/tk.
+
+Prerequisites: `make`, `go`, `curl`, `zip`.
+
+```sh
+make dist/GORTS-Linux.zip
+make dist/GORTS-Windows.zip
+```
+
+See Makefile for details.
+
 # License
 
 Copyright (C) 2023 Bui Thanh Nhan
