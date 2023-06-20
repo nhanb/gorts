@@ -138,14 +138,13 @@ grid columnconfigure .c.buttons 3 -pad 15
 proc initialize {b64icon webport countrycodes} {
     seticon $b64icon
     set ::mainstatus "Point your OBS browser source to http://localhost:${webport}"
-    readscoreboard
-    setupdiffcheck
-
     .c.players.p1country configure -values $countrycodes
     .c.players.p2country configure -values $countrycodes
 
+    readscoreboard
+    setupdiffcheck
     readplayernames
-    setup_player_name_suggestion
+    setupplayersuggestion
 }
 
 proc seticon {b64data} {
@@ -197,7 +196,7 @@ proc readplayernames {} {
     .c.players.p2name configure -values $playernames
 }
 
-proc setup_player_name_suggestion {} {
+proc setupplayersuggestion {} {
     proc update_suggestions {_ key _} {
         if {!($key == "p1name" || $key == "p2name")} {
             return
