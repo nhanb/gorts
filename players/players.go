@@ -4,6 +4,8 @@ import (
 	"encoding/csv"
 	"log"
 	"os"
+	"regexp"
+	"strings"
 )
 
 type Player struct {
@@ -26,6 +28,8 @@ func FromFile(filepath string) []Player {
 	reader := csv.NewReader(f)
 	reader.FieldsPerRecord = 3
 	records, err := reader.ReadAll()
+	// TODO: should probably return error so GUI can show an error message
+	// instead of crashing.
 	if err != nil {
 		log.Fatalf("csv parse error for %s: %s", filepath, err)
 	}
@@ -40,4 +44,16 @@ func FromFile(filepath string) []Player {
 	}
 
 	return players
+}
+
+var nonAlphanumeric = regexp.MustCompile(`[^a-zA-Z0-9]+`)
+
+func normalize(in string) (out string) {
+	out = strings.ToLower(in)
+	out = nonAlphanumeric.ReplaceAllString(out, "")
+	return out
+}
+
+func (p *Player) MatchesName(query string) bool {
+	return normalize(query) == normalize(p.Name)
 }

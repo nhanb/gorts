@@ -145,6 +145,7 @@ proc initialize {b64icon webport countrycodes} {
     .c.players.p2country configure -values $countrycodes
 
     readplayernames
+    setup_player_name_suggestion
 }
 
 proc seticon {b64data} {
@@ -194,6 +195,31 @@ proc readplayernames {} {
     }
     .c.players.p1name configure -values $playernames
     .c.players.p2name configure -values $playernames
+}
+
+proc setup_player_name_suggestion {} {
+    proc update_suggestions {_ key _} {
+        if {!($key == "p1name" || $key == "p2name")} {
+            return
+        }
+        set widget .c.players.$key
+        set newvalue $::scoreboard($key)
+        set matches [searchplayers $newvalue]
+        $widget configure -values $matches
+    }
+    trace add variable ::scoreboard write update_suggestions
+}
+
+proc searchplayers {query} {
+    set playernames {}
+    puts "searchplayers"
+    puts $query
+    set line [gets stdin]
+    while {$line != "end"} {
+        lappend playernames $line
+        set line [gets stdin]
+    }
+    return $playernames
 }
 
 proc discardstate {} {
