@@ -81,8 +81,8 @@ ttk::button .c.players.p2win -text "▲ Win" -width 6 -command {incr scoreboard(
 ttk::label .c.players.p2teamlbl -text "Team 2"
 ttk::combobox .c.players.p2team -textvariable scoreboard(p2team)
 ttk::frame .c.buttons
-ttk::button .c.buttons.apply -text "▶ Apply" -command applystate
-ttk::button .c.buttons.discard -text "✖ Discard" -command discardstate
+ttk::button .c.buttons.apply -text "▶ Apply" -command applyscoreboard
+ttk::button .c.buttons.discard -text "✖ Discard" -command discardscoreboard
 ttk::button .c.buttons.reset -text "↶ Reset scores" -command {
     set scoreboard(p1score) 0
     set scoreboard(p2score) 0
@@ -138,7 +138,7 @@ grid columnconfigure .c.buttons 3 -pad 15
 proc initialize {b64icon webport countrycodes} {
     seticon $b64icon
     set ::mainstatus "Point your OBS browser source to http://localhost:${webport}"
-    readstate
+    readscoreboard
     setupdiffcheck
 
     .c.players.p1country configure -values $countrycodes
@@ -155,8 +155,8 @@ proc seticon {b64data} {
     wm iconphoto . -default applicationIcon
 }
 
-proc readstate {} {
-    puts "readstate"
+proc readscoreboard {} {
+    puts "readscoreboard"
     set ::scoreboard(description) [gets stdin]
     set ::scoreboard(subtitle) [gets stdin]
     set ::scoreboard(p1name) [gets stdin]
@@ -167,11 +167,11 @@ proc readstate {} {
     set ::scoreboard(p2country) [gets stdin]
     set ::scoreboard(p2score) [gets stdin]
     set ::scoreboard(p2team) [gets stdin]
-    update_applied_state
+    update_applied_scoreboard
 }
 
-proc applystate {} {
-    puts "applystate"
+proc applyscoreboard {} {
+    puts "applyscoreboard"
     puts $::scoreboard(description)
     puts $::scoreboard(subtitle)
     puts $::scoreboard(p1name)
@@ -182,7 +182,7 @@ proc applystate {} {
     puts $::scoreboard(p2country)
     puts $::scoreboard(p2score)
     puts $::scoreboard(p2team)
-    update_applied_state
+    update_applied_scoreboard
 }
 
 proc readplayernames {} {
@@ -222,13 +222,13 @@ proc searchplayers {query} {
     return $playernames
 }
 
-proc discardstate {} {
+proc discardscoreboard {} {
     foreach key [array names ::scoreboard] {
         set ::scoreboard($key) $::applied_scoreboard($key)
     }
 }
 
-proc update_applied_state {} {
+proc update_applied_scoreboard {} {
     foreach key [array names ::scoreboard] {
         set ::applied_scoreboard($key) $::scoreboard($key)
     }

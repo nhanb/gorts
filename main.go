@@ -22,7 +22,7 @@ import (
 
 const WebPort = "1337"
 const WebDir = "web"
-const StateFile = WebDir + "/state.json"
+const ScoreboardFile = WebDir + "/state.json"
 const PlayersFile = "players.csv"
 
 //go:embed tcl/main.tcl
@@ -86,7 +86,7 @@ func startGUI() {
 	println("Loaded main tcl script.")
 
 	allplayers := players.FromFile(PlayersFile)
-	state := initState()
+	scoreboard := initScoreboard()
 	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
 
 	fmt.Fprintf(
@@ -113,31 +113,31 @@ func startGUI() {
 		req := scanner.Text()
 		println("--> " + req)
 		switch req {
-		case "readstate":
+		case "readscoreboard":
 			// TODO: there must be a more... civilized way.
-			respond(state.Description)
-			respond(state.Subtitle)
-			respond(state.P1name)
-			respond(state.P1country)
-			respond(strconv.Itoa(state.P1score))
-			respond(state.P1team)
-			respond(state.P2name)
-			respond(state.P2country)
-			respond(strconv.Itoa(state.P2score))
-			respond(state.P2team)
+			respond(scoreboard.Description)
+			respond(scoreboard.Subtitle)
+			respond(scoreboard.P1name)
+			respond(scoreboard.P1country)
+			respond(strconv.Itoa(scoreboard.P1score))
+			respond(scoreboard.P1team)
+			respond(scoreboard.P2name)
+			respond(scoreboard.P2country)
+			respond(strconv.Itoa(scoreboard.P2score))
+			respond(scoreboard.P2team)
 
-		case "applystate":
-			state.Description = next()
-			state.Subtitle = next()
-			state.P1name = next()
-			state.P1country = next()
-			state.P1score, _ = strconv.Atoi(next())
-			state.P1team = next()
-			state.P2name = next()
-			state.P2country = next()
-			state.P2score, _ = strconv.Atoi(next())
-			state.P2team = next()
-			state.Write()
+		case "applyscoreboard":
+			scoreboard.Description = next()
+			scoreboard.Subtitle = next()
+			scoreboard.P1name = next()
+			scoreboard.P1country = next()
+			scoreboard.P1score, _ = strconv.Atoi(next())
+			scoreboard.P1team = next()
+			scoreboard.P2name = next()
+			scoreboard.P2country = next()
+			scoreboard.P2score, _ = strconv.Atoi(next())
+			scoreboard.P2team = next()
+			scoreboard.Write()
 
 		case "readplayernames":
 			for _, player := range allplayers {
@@ -173,7 +173,7 @@ func startGUI() {
 	}
 }
 
-type State struct {
+type Scoreboard struct {
 	Description string `json:"description"`
 	Subtitle    string `json:"subtitle"`
 	P1name      string `json:"p1name"`
@@ -186,26 +186,26 @@ type State struct {
 	P2team      string `json:"p2team"`
 }
 
-func initState() State {
-	var state State
-	file, err := os.Open(StateFile)
+func initScoreboard() Scoreboard {
+	var scoreboard Scoreboard
+	file, err := os.Open(ScoreboardFile)
 	if err == nil {
 		defer file.Close()
 		bytes, err := ioutil.ReadAll(file)
 		if err != nil {
 			panic(err)
 		}
-		json.Unmarshal(bytes, &state)
+		json.Unmarshal(bytes, &scoreboard)
 	}
-	return state
+	return scoreboard
 }
 
-func (s *State) Write() {
+func (s *Scoreboard) Write() {
 	blob, err := json.MarshalIndent(s, "", "    ")
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile(StateFile, blob, 0644)
+	err = ioutil.WriteFile(ScoreboardFile, blob, 0644)
 	if err != nil {
 		panic(err)
 	}
