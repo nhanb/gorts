@@ -42,7 +42,24 @@ Windows. If you want to contribute then I'm happy to give pointers though.
 
 Unplanned but I'm open to paid work.
 
-# Build from source
+# I got a virus warning?
+
+GORTS is written in the Go programing language, which suffers from false
+positives more often than usual. See <https://go.dev/doc/faq#virus>:
+
+> Why does my virus-scanning software think my Go distribution or compiled
+> binary is infected?
+>
+> This is a common occurrence, especially on Windows machines, and is almost
+> always a false positive. Commercial virus scanning programs are often
+> confused by the structure of Go binaries, which they don't see as often as
+> those compiled from other languages.
+
+So no, I'm not trying to hackerman you. If you're really concerned, feel free
+to audit the code and compile GORTS yourself. There's really not that much
+code.
+
+# Compile from source
 
 Can cross-compile from any unix-like. I'm cheating a little though, by
 downloading a prebuilt tcl executable for Windows, and just assume Linux users
