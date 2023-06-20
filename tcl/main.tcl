@@ -202,8 +202,8 @@ proc setup_player_name_suggestion {} {
         if {!($key == "p1name" || $key == "p2name")} {
             return
         }
-        set widget .c.players.$key
         set newvalue $::scoreboard($key)
+        set widget .c.players.$key
         set matches [searchplayers $newvalue]
         $widget configure -values $matches
     }

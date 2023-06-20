@@ -85,7 +85,7 @@ func startGUI() {
 	fmt.Fprintln(stdin, mainTcl)
 	println("Loaded main tcl script.")
 
-	players := players.FromFile(PlayersFile)
+	allplayers := players.FromFile(PlayersFile)
 	state := initState()
 	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
 
@@ -140,14 +140,23 @@ func startGUI() {
 			state.Write()
 
 		case "readplayernames":
-			for _, player := range players {
+			for _, player := range allplayers {
 				respond(player.Name)
 			}
 			respond("end")
 
 		case "searchplayers":
-			query := next()
-			for _, p := range players {
+			query := strings.TrimSpace(next())
+
+			if query == "" {
+				for _, p := range allplayers {
+					respond(p.Name)
+				}
+				respond("end")
+				break
+			}
+
+			for _, p := range allplayers {
 				if p.MatchesName(query) {
 					respond(p.Name)
 				}

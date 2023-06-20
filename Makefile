@@ -2,10 +2,12 @@ windows:
 	CGO_ENABLED=0 GOOS=windows \
 		go build -o dist/windows/gorts.exe -ldflags -H=windowsgui
 	cp -r web dist/windows/web
+	cp players.sample.csv dist/windows/
 
 linux:
 	CGO_ENABLED=0 GOOS=linux go build -o dist/linux/gorts
 	cp -r web dist/linux/web
+	cp players.sample.csv dist/linux/
 
 dist/GORTS-Windows.zip: windows
 	cd dist/windows; \
