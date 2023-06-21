@@ -8,7 +8,7 @@ foreach p {stdin stdout stderr} {
     fconfigure $p -translation lf
 }
 
-source tcl/netstring.tcl
+source -encoding "utf-8" tcl/netstring.tcl
 
 package require Tk
 

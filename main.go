@@ -26,9 +26,6 @@ const ScoreboardFile = WebDir + "/state.json"
 const PlayersFile = "players.csv"
 const StartggFile = "creds-start.gg"
 
-//go:embed tcl/main.tcl
-var mainTcl string
-
 //go:embed gorts.png
 var gortsPngIcon []byte
 
@@ -54,7 +51,7 @@ func startGUI() {
 		tclPath = "./tclkit.exe"
 	}
 
-	cmd := exec.Command(tclPath)
+	cmd := exec.Command(tclPath, "-encoding", "utf-8")
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		panic(err)
@@ -83,7 +80,7 @@ func startGUI() {
 		}
 	}()
 
-	fmt.Fprintln(stdin, mainTcl)
+	fmt.Fprintln(stdin, `source -encoding "utf-8" tcl/main.tcl`)
 	println("Loaded main tcl script.")
 
 	allplayers := players.FromFile(PlayersFile)
