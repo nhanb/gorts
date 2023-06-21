@@ -23,3 +23,19 @@ proc readnetstring {chan} {
     read $chan 1; # consume the trailing ","
     return $nstr
 }
+
+# Assumes input is multiple well formed netstrings concatenated.
+# Returns list of decoded values.
+proc decodenetstrings {ns} {
+    set results {}
+    while {$ns != ""} {
+        set colonIdx [string first : $ns]
+        set len [string range $ns 0 [expr { $colonIdx - 1 }]]
+        set startIdx [expr {$colonIdx + 1}]
+        set endIdx [expr {$startIdx + $len - 1}]
+        set str [string range $ns $startIdx $endIdx]
+        lappend results $str
+        set ns [string range $ns [expr {$endIdx + 2}] end];
+    }
+    return $results
+}

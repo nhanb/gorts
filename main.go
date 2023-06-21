@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	_ "embed"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,9 +13,9 @@ import (
 	"os/exec"
 	"runtime"
 	"strconv"
-	"strings"
 	"time"
 
+	"go.imnhan.com/gorts/netstring"
 	"go.imnhan.com/gorts/players"
 	"go.imnhan.com/gorts/startgg"
 )
@@ -94,6 +93,7 @@ func startGUI() {
 	fmt.Fprintln(stdin, "initialize")
 
 	scanner := bufio.NewScanner(stdout)
+	scanner.Split(netstring.SplitFunc)
 
 	next := func() string {
 		scanner.Scan()
@@ -102,90 +102,97 @@ func startGUI() {
 		return v
 	}
 
-	respond := func(s string) {
+	respondOld := func(s string) {
 		debug := "<-- " + s
 		if len(debug) > 35 {
 			debug = debug[:35] + "[...]"
 		}
 		println(debug)
-		io.WriteString(stdin, s+"\n")
+		io.WriteString(stdin, netstring.Encode(s))
+	}
+
+	respond := func(ss ...string) {
+		debug := fmt.Sprintf("<-- %v", ss)
+		if len(debug) > 35 {
+			debug = debug[:35] + "[...]"
+		}
+		println(debug)
+		payload := netstring.EncodeN(ss...)
+		io.WriteString(stdin, payload)
 	}
 
 	for scanner.Scan() {
-		req := scanner.Text()
-		println("--> " + req)
-		switch req {
-		case "readscoreboard":
+		req := netstring.DecodeMultiple(scanner.Text())
+		fmt.Printf("--> %v\n", req)
+		switch req[0] {
+		case "geticon":
+			respond(string(gortsPngIcon))
+
+		case "getstartgg":
+			respond(startggInputs.Token, startggInputs.Slug)
+
+		case "getwebport":
+			respond(WebPort)
+
+		case "getcountrycodes":
+			respond(startgg.CountryCodes...)
+
+		case "getscoreboard":
 			// TODO: there must be a more... civilized way.
-			respond(scoreboard.Description)
-			respond(scoreboard.Subtitle)
-			respond(scoreboard.P1name)
-			respond(scoreboard.P1country)
-			respond(strconv.Itoa(scoreboard.P1score))
-			respond(scoreboard.P1team)
-			respond(scoreboard.P2name)
-			respond(scoreboard.P2country)
-			respond(strconv.Itoa(scoreboard.P2score))
-			respond(scoreboard.P2team)
+			respond(
+				scoreboard.Description,
+				scoreboard.Subtitle,
+				scoreboard.P1name,
+				scoreboard.P1country,
+				strconv.Itoa(scoreboard.P1score),
+				scoreboard.P1team,
+				scoreboard.P2name,
+				scoreboard.P2country,
+				strconv.Itoa(scoreboard.P2score),
+				scoreboard.P2team,
+			)
 
 		case "applyscoreboard":
-			scoreboard.Description = next()
-			scoreboard.Subtitle = next()
-			scoreboard.P1name = next()
-			scoreboard.P1country = next()
-			scoreboard.P1score, _ = strconv.Atoi(next())
-			scoreboard.P1team = next()
-			scoreboard.P2name = next()
-			scoreboard.P2country = next()
-			scoreboard.P2score, _ = strconv.Atoi(next())
-			scoreboard.P2team = next()
+			sb := req[1:]
+			scoreboard.Description = sb[0]
+			scoreboard.Subtitle = sb[1]
+			scoreboard.P1name = sb[2]
+			scoreboard.P1country = sb[3]
+			scoreboard.P1score, _ = strconv.Atoi(sb[4])
+			scoreboard.P1team = sb[5]
+			scoreboard.P2name = sb[6]
+			scoreboard.P2country = sb[7]
+			scoreboard.P2score, _ = strconv.Atoi(sb[8])
+			scoreboard.P2team = sb[9]
 			scoreboard.Write()
-
-		case "readplayernames":
-			for _, player := range allplayers {
-				respond(player.Name)
-			}
-			respond("end")
+			respond("ok")
 
 		case "searchplayers":
-			query := strings.TrimSpace(next())
+			query := req[1]
+			var names []string
 
 			if query == "" {
 				for _, p := range allplayers {
-					respond(p.Name)
+					names = append(names, p.Name)
 				}
-				respond("end")
+				respond(names...)
 				break
 			}
 
 			for _, p := range allplayers {
 				if p.MatchesName(query) {
-					respond(p.Name)
+					names = append(names, p.Name)
 				}
 			}
-			respond("end")
+			respond(names...)
 
-		case "fetchplayers":
+		case "fetchplayers": // FIXME
 			startggInputs.Token = next()
 			startggInputs.Slug = next()
 			time.Sleep(3 * time.Second)
-			respond("fetchplayers__resp")
-			respond("All done.")
+			respondOld("fetchplayers__resp")
+			respondOld("All done.")
 			startggInputs.Write(StartggFile)
-
-		case "readwebport":
-			respond(WebPort)
-
-		case "geticon":
-			b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
-			respond(b64icon)
-
-		case "getcountrycodes":
-			respond(strings.Join(startgg.CountryCodes, " "))
-
-		case "readstartgg":
-			respond(startggInputs.Token)
-			respond(startggInputs.Slug)
 		}
 	}
 

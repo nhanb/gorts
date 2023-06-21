@@ -8,6 +8,8 @@ foreach p {stdin stdout stderr} {
     fconfigure $p -translation lf
 }
 
+source tcl/netstring.tcl
+
 package require Tk
 
 wm title . "Overly Repetitive Tedious Software (in Go)"
@@ -164,86 +166,89 @@ grid .n.s.msg -row 3 -column 1 -stick W
 grid columnconfigure .n.s 1 -weight 1
 grid rowconfigure .n.s 1 -pad 5
 
-# The following procs constitute a very simple line-based IPC system where Tcl
-# client talks to Go server via stdin/stdout.
-
 proc initialize {} {
-    seticon
-    setwebport
-    setcountrycodes
-    setstartgg
-    readscoreboard
+    foreach p {stdin stdout} {
+        fconfigure $p -translation binary
+    }
+    loadicon
+    loadstartgg
+    loadwebmsg
+    loadcountrycodes
+    loadscoreboard
+    loadplayernames
+
     setupdiffcheck
-    readplayernames
-    setupplayersuggestion
+    #setupplayersuggestion
 }
 
-proc setstartgg {} {
-    puts "readstartgg"
-    set ::startgg(token) [gets stdin]
-    set ::startgg(slug) [gets stdin]
+# Very simple IPC system where Tcl client talks to Go server via stdin/stdout
+# using netstrings as wire format.
+proc ipc {method args} {
+    set payload [concat $method $args]
+    puts -nonewline [netstrings $payload]
+    flush stdout
+    return [decodenetstrings [readnetstring stdin]]
 }
 
-proc setwebport {} {
-    puts "readwebport"
-    set webport [gets stdin]
-    set ::mainstatus "Point your OBS browser source to http://localhost:${webport}"
-}
-
-proc seticon {} {
-    puts "geticon"
-    set b64data [gets stdin]
-    image create photo applicationIcon -data [
-        binary decode base64 $b64data
-    ]
+proc loadicon {} {
+    set resp [ipc "geticon"]
+    set iconblob [lindex $resp 0]
+    image create photo applicationIcon -data $iconblob
     wm iconphoto . -default applicationIcon
 }
 
-proc setcountrycodes {} {
-    puts getcountrycodes
-    set countrycodes [gets stdin]
-    .n.m.players.p1country configure -values $countrycodes
-    .n.m.players.p2country configure -values $countrycodes
+proc loadstartgg {} {
+    set resp [ipc "getstartgg"]
+    set ::startgg(token) [lindex $resp 0]
+    set ::startgg(slug) [lindex $resp 1]
 }
 
-proc readscoreboard {} {
-    puts "readscoreboard"
-    set ::scoreboard(description) [gets stdin]
-    set ::scoreboard(subtitle) [gets stdin]
-    set ::scoreboard(p1name) [gets stdin]
-    set ::scoreboard(p1country) [gets stdin]
-    set ::scoreboard(p1score) [gets stdin]
-    set ::scoreboard(p1team) [gets stdin]
-    set ::scoreboard(p2name) [gets stdin]
-    set ::scoreboard(p2country) [gets stdin]
-    set ::scoreboard(p2score) [gets stdin]
-    set ::scoreboard(p2team) [gets stdin]
+proc loadwebmsg {} {
+    set resp [ipc "getwebport"]
+    set webport [lindex $resp 0]
+    set ::mainstatus "Point your OBS browser source to http://localhost:${webport}"
+}
+
+proc loadcountrycodes {} {
+    set codes [ipc "getcountrycodes"]
+    .n.m.players.p1country configure -values $codes
+    .n.m.players.p2country configure -values $codes
+}
+
+proc loadscoreboard {} {
+    set sb [ipc "getscoreboard"]
+    set ::scoreboard(description) [lindex $sb 0]
+    set ::scoreboard(subtitle) [lindex $sb 1]
+    set ::scoreboard(p1name) [lindex $sb 2]
+    set ::scoreboard(p1country) [lindex $sb 3]
+    set ::scoreboard(p1score) [lindex $sb 4]
+    set ::scoreboard(p1team) [lindex $sb 5]
+    set ::scoreboard(p2name) [lindex $sb 6]
+    set ::scoreboard(p2country) [lindex $sb 7]
+    set ::scoreboard(p2score) [lindex $sb 8]
+    set ::scoreboard(p2team) [lindex $sb 9]
     update_applied_scoreboard
 }
 
 proc applyscoreboard {} {
-    puts "applyscoreboard"
-    puts $::scoreboard(description)
-    puts $::scoreboard(subtitle)
-    puts $::scoreboard(p1name)
-    puts $::scoreboard(p1country)
-    puts $::scoreboard(p1score)
-    puts $::scoreboard(p1team)
-    puts $::scoreboard(p2name)
-    puts $::scoreboard(p2country)
-    puts $::scoreboard(p2score)
-    puts $::scoreboard(p2team)
+    set sb [ \
+        ipc "applyscoreboard" \
+        $::scoreboard(description) \
+        $::scoreboard(subtitle) \
+        $::scoreboard(p1name) \
+        $::scoreboard(p1country) \
+        $::scoreboard(p1score) \
+        $::scoreboard(p1team) \
+        $::scoreboard(p2name) \
+        $::scoreboard(p2country) \
+        $::scoreboard(p2score) \
+        $::scoreboard(p2team) \
+    ]
     update_applied_scoreboard
 }
 
-proc readplayernames {} {
-    set playernames {}
-    puts "readplayernames"
-    set line [gets stdin]
-    while {$line != "end"} {
-        lappend playernames $line
-        set line [gets stdin]
-    }
+proc loadplayernames {} {
+    set playernames [ipc "searchplayers" ""]
     .n.m.players.p1name configure -values $playernames
     .n.m.players.p2name configure -values $playernames
 }

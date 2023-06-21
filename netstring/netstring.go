@@ -5,13 +5,23 @@
 package netstring
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 func Encode(s string) string {
 	return fmt.Sprintf("%d:%s,", len(s), s)
+}
+
+// Encode multiple strings into a nested netstring
+func EncodeN(strings ...string) (ns string) {
+	for _, s := range strings {
+		ns += Encode(s)
+	}
+	return Encode(ns)
 }
 
 // A SplitFunc to be used in a bufio.Scanner
@@ -35,4 +45,17 @@ func SplitFunc(data []byte, atEOF bool) (advance int, token []byte, err error) {
 
 	// The whole netstring should now be within the buffer
 	return colonIndex + 1 + length + 1, rest[:length], nil
+}
+
+// Decode multiple concatenated netstrings into plain strings.
+// This is NOT a reverse EncodeN() - the input here is not a nested
+// netstring.
+func DecodeMultiple(nstrings string) (results []string) {
+	r := strings.NewReader(nstrings)
+	s := bufio.NewScanner(r)
+	s.Split(SplitFunc)
+	for s.Scan() {
+		results = append(results, s.Text())
+	}
+	return results
 }
