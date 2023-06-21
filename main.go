@@ -89,18 +89,9 @@ func startGUI() {
 
 	allplayers := players.FromFile(PlayersFile)
 	scoreboard := initScoreboard()
-	b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
 	startggInputs := startgg.LoadInputs(StartggFile)
 
-	fmt.Fprintf(
-		stdin,
-		"initialize %s %s {%s} %s %s\n",
-		b64icon,
-		WebPort,
-		strings.Join(startgg.CountryCodes, " "),
-		startggInputs.Token,
-		startggInputs.Slug,
-	)
+	fmt.Fprintln(stdin, "initialize")
 
 	scanner := bufio.NewScanner(stdout)
 
@@ -112,7 +103,11 @@ func startGUI() {
 	}
 
 	respond := func(s string) {
-		println("<--", s)
+		debug := "<-- " + s
+		if len(debug) > 35 {
+			debug = debug[:35] + "[...]"
+		}
+		println(debug)
 		io.WriteString(stdin, s+"\n")
 	}
 
@@ -177,8 +172,21 @@ func startGUI() {
 			respond("fetchplayers__resp")
 			respond("All done.")
 			startggInputs.Write(StartggFile)
-		}
 
+		case "readwebport":
+			respond(WebPort)
+
+		case "geticon":
+			b64icon := base64.StdEncoding.EncodeToString(gortsPngIcon)
+			respond(b64icon)
+
+		case "getcountrycodes":
+			respond(strings.Join(startgg.CountryCodes, " "))
+
+		case "readstartgg":
+			respond(startggInputs.Token)
+			respond(startggInputs.Slug)
+		}
 	}
 
 	println("Tcl process terminated.")

@@ -147,7 +147,7 @@ grid rowconfigure .n.m.players 3 -pad 5
 
 # start.gg tab:
 
-.n select .n.s; # for debug only
+#.n select .n.s; # for debug only
 ttk::label .n.s.tokenlbl -text "Personal token: "
 ttk::entry .n.s.token -show * -textvariable startgg(token)
 ttk::label .n.s.tournamentlbl -text "Tournament slug: "
@@ -167,24 +167,43 @@ grid rowconfigure .n.s 1 -pad 5
 # The following procs constitute a very simple line-based IPC system where Tcl
 # client talks to Go server via stdin/stdout.
 
-proc initialize {b64icon webport countrycodes startgg_token startgg_slug} {
-    seticon $b64icon
-    set ::mainstatus "Point your OBS browser source to http://localhost:${webport}"
-    .n.m.players.p1country configure -values $countrycodes
-    .n.m.players.p2country configure -values $countrycodes
-    set ::startgg(token) $startgg_token
-    set ::startgg(slug) $startgg_slug
+proc initialize {} {
+    seticon
+    setwebport
+    setcountrycodes
+    setstartgg
     readscoreboard
     setupdiffcheck
     readplayernames
     setupplayersuggestion
 }
 
-proc seticon {b64data} {
+proc setstartgg {} {
+    puts "readstartgg"
+    set ::startgg(token) [gets stdin]
+    set ::startgg(slug) [gets stdin]
+}
+
+proc setwebport {} {
+    puts "readwebport"
+    set webport [gets stdin]
+    set ::mainstatus "Point your OBS browser source to http://localhost:${webport}"
+}
+
+proc seticon {} {
+    puts "geticon"
+    set b64data [gets stdin]
     image create photo applicationIcon -data [
         binary decode base64 $b64data
     ]
     wm iconphoto . -default applicationIcon
+}
+
+proc setcountrycodes {} {
+    puts getcountrycodes
+    set countrycodes [gets stdin]
+    .n.m.players.p1country configure -values $countrycodes
+    .n.m.players.p2country configure -values $countrycodes
 }
 
 proc readscoreboard {} {
