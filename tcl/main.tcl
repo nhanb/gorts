@@ -288,6 +288,7 @@ proc fetchplayers {} {
     .n.s.fetch configure -state disabled
     .n.s.token configure -state disabled
     .n.s.tournamentslug configure -state disabled
+    .n state disabled
     set ::startgg(msg) "Fetching..."
     ipc_write "fetchplayers" $::startgg(token) $::startgg(slug)
 }
@@ -297,6 +298,7 @@ proc fetchplayers__resp {} {
     .n.s.fetch configure -state normal
     .n.s.token configure -state normal
     .n.s.tournamentslug configure -state normal
+    .n state !disabled
 }
 
 proc discardscoreboard {} {
