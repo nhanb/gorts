@@ -178,7 +178,7 @@ proc initialize {} {
     loadplayernames
 
     setupdiffcheck
-    #setupplayersuggestion
+    setupplayersuggestion
 
 
     # By default this window is not focused and not even brought to
@@ -280,22 +280,10 @@ proc setupplayersuggestion {} {
         }
         set newvalue $::scoreboard($key)
         set widget .n.m.players.$key
-        set matches [searchplayers $newvalue]
+        set matches [ipc "searchplayers" $newvalue]
         $widget configure -values $matches
     }
     trace add variable ::scoreboard write update_suggestions
-}
-
-proc searchplayers {query} {
-    set playernames {}
-    puts "searchplayers"
-    puts $query
-    set line [gets stdin]
-    while {$line != "end"} {
-        lappend playernames $line
-        set line [gets stdin]
-    }
-    return $playernames
 }
 
 proc fetchplayers {} {
