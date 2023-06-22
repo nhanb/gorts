@@ -4,6 +4,7 @@ import (
 	"bufio"
 	_ "embed"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -11,7 +12,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -43,15 +43,13 @@ func main() {
 		}
 	}()
 
-	startGUI()
+	tclPathPtr := flag.String("tcl", DefaultTclPath, "Path to tclsh executable")
+	flag.Parse()
+
+	startGUI(*tclPathPtr)
 }
 
-func startGUI() {
-	tclPath := "tclsh"
-	if runtime.GOOS == "windows" {
-		tclPath = "./tclkit.exe"
-	}
-
+func startGUI(tclPath string) {
 	cmd := exec.Command(tclPath, "-encoding", "utf-8")
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {

@@ -9,6 +9,8 @@ import (
 	"github.com/lxn/win"
 )
 
+const DefaultTclPath = "./tclkit.exe"
+
 func forceFocus(handle string) error {
 	hex := handle[2:] // trim the "0x" prefix
 	uintHandle, err := strconv.ParseUint(hex, 16, 64)
