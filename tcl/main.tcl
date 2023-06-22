@@ -296,7 +296,16 @@ proc fetchplayers {} {
 }
 
 proc fetchplayers__resp {} {
-    set ::startgg(msg) [lindex [ipc_read] 0]
+    set resp [ipc_read]
+    set status [lindex $resp 0]
+    set msg [lindex $resp 1]
+
+    set ::startgg(msg) $msg
+
+    if {$status == "ok"} {
+        loadplayernames
+    }
+
     .n.s.fetch configure -state normal
     .n.s.token configure -state normal
     .n.s.tournamentslug configure -state normal

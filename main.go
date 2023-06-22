@@ -14,7 +14,6 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
-	"time"
 
 	"go.imnhan.com/gorts/netstring"
 	"go.imnhan.com/gorts/players"
@@ -175,10 +174,17 @@ func startGUI(tclPath string) {
 		case "fetchplayers":
 			startggInputs.Token = req[1]
 			startggInputs.Slug = req[2]
-			time.Sleep(3 * time.Second)
+			ps, err := startgg.FetchPlayers(startggInputs)
 			fmt.Fprintln(stdin, "fetchplayers__resp")
-			respond("All done.")
+			if err != nil {
+				respond("err", fmt.Sprintf("Error: %s", err))
+				break
+			}
+			allplayers = ps
+			// TODO: show write errors to user instead of ignoring
 			startggInputs.Write(StartggFile)
+			players.Write(PlayersFile, allplayers)
+			respond("ok", fmt.Sprintf("Successfully fetched %d players.", len(allplayers)))
 		}
 	}
 

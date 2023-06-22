@@ -2,6 +2,7 @@ package players
 
 import (
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -56,4 +57,18 @@ func normalize(in string) (out string) {
 
 func (p *Player) MatchesName(query string) bool {
 	return strings.Contains(normalize(p.Name), normalize(query))
+}
+
+func Write(filepath string, ps []Player) error {
+	f, err := os.Create(filepath)
+	if err != nil {
+		return fmt.Errorf("write players to file: %w", err)
+	}
+	defer f.Close()
+
+	writer := csv.NewWriter(f)
+	for _, p := range ps {
+		writer.Write([]string{p.Name, p.Country, p.Team})
+	}
+	return nil
 }

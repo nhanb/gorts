@@ -5,6 +5,7 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -49,6 +50,7 @@ func (c *Inputs) Write(filepath string) {
 	}
 }
 
+// TODO: follow pagination
 func FetchPlayers(i Inputs) ([]players.Player, error) {
 	query := `
 {
@@ -99,10 +101,67 @@ func FetchPlayers(i Inputs) ([]players.Player, error) {
 	defer resp.Body.Close()
 
 	respdata, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(">>>>", string(respdata))
+	//fmt.Println(">>>>", string(respdata[:50]))
 
-	//var res map[string]interface{}
-	//json.NewDecoder(resp.Body).Decode(&res)
-	//fmt.Println(res["json"])
-	return nil, nil
+	if resp.StatusCode != http.StatusOK {
+		respJson := struct {
+			Message string `json:"message"`
+		}{}
+		err = json.Unmarshal(respdata, &respJson)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"Unexpected %d response: %s", resp.StatusCode, respdata,
+			)
+		}
+		return nil, errors.New(respJson.Message)
+	}
+
+	respJson := struct {
+		Data struct {
+			Tournament struct {
+				Participants struct {
+					Nodes []struct {
+						// TODO: read team names from entrants too
+						GamerTag string `json:"gamerTag"`
+						Prefix   string `json:"prefix"`
+						User     struct {
+							Location struct {
+								Country string `json:"country"`
+							} `json:"location"`
+						} `json:"user"`
+					} `json:"nodes"`
+				} `json:"participants"`
+			} `json:"tournament"`
+		} `json:"data"`
+	}{}
+
+	err = json.Unmarshal(respdata, &respJson)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"Unexpected %d response: %s", resp.StatusCode, respdata,
+		)
+	}
+
+	participants := respJson.Data.Tournament.Participants.Nodes
+	results := make([]players.Player, len(participants))
+	for i, part := range participants {
+		p := players.Player{}
+
+		if part.Prefix == "" {
+			p.Name = part.GamerTag
+		} else {
+			p.Name = fmt.Sprintf("%s %s", part.Prefix, part.GamerTag)
+		}
+
+		code, ok := countryNameToCode[part.User.Location.Country]
+		if ok {
+			p.Country = code
+		} else if code != "" {
+			fmt.Printf("*** Unknown country: %s\n", part.User.Location.Country)
+		}
+
+		results[i] = p
+	}
+
+	return results, nil
 }
