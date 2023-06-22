@@ -183,11 +183,17 @@ proc initialize {} {
 
 # Very simple IPC system where Tcl client talks to Go server via stdin/stdout
 # using netstrings as wire format.
-proc ipc {method args} {
+proc ipc_write {method args} {
     set payload [concat $method $args]
     puts -nonewline [netstrings $payload]
     flush stdout
+}
+proc ipc_read {} {
     return [decodenetstrings [readnetstring stdin]]
+}
+proc ipc {method args} {
+    ipc_write $method $args
+    return [ipc_read]
 }
 
 proc loadicon {} {
@@ -283,13 +289,11 @@ proc fetchplayers {} {
     .n.s.token configure -state disabled
     .n.s.tournamentslug configure -state disabled
     set ::startgg(msg) "Fetching..."
-    puts fetchplayers
-    puts $::startgg(token)
-    puts $::startgg(slug)
+    ipc_write "fetchplayers" $::startgg(token) $::startgg(slug)
 }
 
 proc fetchplayers__resp {} {
-    set ::startgg(msg) [gets stdin]
+    set ::startgg(msg) [lindex [ipc_read] 0]
     .n.s.fetch configure -state normal
     .n.s.token configure -state normal
     .n.s.tournamentslug configure -state normal

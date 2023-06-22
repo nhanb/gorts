@@ -92,22 +92,6 @@ func startGUI() {
 	scanner := bufio.NewScanner(stdout)
 	scanner.Split(netstring.SplitFunc)
 
-	next := func() string {
-		scanner.Scan()
-		v := scanner.Text()
-		println("-->", v)
-		return v
-	}
-
-	respondOld := func(s string) {
-		debug := "<-- " + s
-		if len(debug) > 35 {
-			debug = debug[:35] + "[...]"
-		}
-		println(debug)
-		io.WriteString(stdin, netstring.Encode(s))
-	}
-
 	respond := func(ss ...string) {
 		debug := fmt.Sprintf("<-- %v", ss)
 		if len(debug) > 35 {
@@ -183,12 +167,12 @@ func startGUI() {
 			}
 			respond(names...)
 
-		case "fetchplayers": // FIXME
-			startggInputs.Token = next()
-			startggInputs.Slug = next()
+		case "fetchplayers":
+			startggInputs.Token = req[1]
+			startggInputs.Slug = req[2]
 			time.Sleep(3 * time.Second)
-			respondOld("fetchplayers__resp")
-			respondOld("All done.")
+			fmt.Fprintln(stdin, "fetchplayers__resp")
+			respond("All done.")
 			startggInputs.Write(StartggFile)
 		}
 	}
