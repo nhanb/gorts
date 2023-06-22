@@ -179,6 +179,15 @@ proc initialize {} {
 
     setupdiffcheck
     #setupplayersuggestion
+
+
+    # By default this window is not focused and not even brought to
+    # foreground on Windows. I suspect it's because tcl is exec'ed from Go.
+    # The old "iconify, deiconify" trick no longer seems to work, so this time
+    # I'm passing it to Go to call the winapi's SetForegroundWindow directly.
+    if {$::tcl_platform(platform) == "windows"} {
+        windows_forcefocus
+    }
 }
 
 # Very simple IPC system where Tcl client talks to Go server via stdin/stdout
@@ -194,6 +203,11 @@ proc ipc_read {} {
 proc ipc {method args} {
     ipc_write [concat $method $args]
     return [ipc_read]
+}
+
+proc windows_forcefocus {} {
+    set handle [winfo id .]
+    ipc "forcefocus" $handle
 }
 
 proc loadicon {} {
@@ -330,14 +344,4 @@ proc checkdiff {_ key _} {
     } else {
         $widget configure -style "Dirty.[winfo class $widget]"
     }
-}
-
-# By default this window is not focused and not even brought to
-# foreground on Windows. I suspect it's because tcl is exec'ed from Go.
-# Minimizing then re-opening it seems to do the trick.
-# This workaround, however, makes the window unfocused on KDE, so
-# let's only use it on Windows.
-if {$tcl_platform(platform) == "windows"} {
-    wm iconify .
-    wm deiconify .
 }

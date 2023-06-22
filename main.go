@@ -107,6 +107,12 @@ func startGUI() {
 		req := netstring.DecodeMultiple(scanner.Text())
 		fmt.Printf("--> %v\n", strings.Join(req, ", "))
 		switch req[0] {
+		case "forcefocus":
+			err := forceFocus(req[1])
+			if err != nil {
+				fmt.Printf("forcefocus: %s\n", err)
+			}
+			respond("ok")
 		case "geticon":
 			respond(string(gortsPngIcon))
 
