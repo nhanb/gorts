@@ -192,7 +192,7 @@ proc ipc_read {} {
     return [decodenetstrings [readnetstring stdin]]
 }
 proc ipc {method args} {
-    ipc_write $method $args
+    ipc_write [concat $method $args]
     return [ipc_read]
 }
 
