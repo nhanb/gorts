@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
 	"go.imnhan.com/gorts/netstring"
@@ -93,7 +94,7 @@ func startGUI() {
 	scanner.Split(netstring.SplitFunc)
 
 	respond := func(ss ...string) {
-		debug := fmt.Sprintf("<-- %v", ss)
+		debug := fmt.Sprintf("<-- %v", strings.Join(ss, ", "))
 		if len(debug) > 35 {
 			debug = debug[:35] + "[...]"
 		}
@@ -104,7 +105,7 @@ func startGUI() {
 
 	for scanner.Scan() {
 		req := netstring.DecodeMultiple(scanner.Text())
-		fmt.Printf("--> %v\n", req)
+		fmt.Printf("--> %v\n", strings.Join(req, ", "))
 		switch req[0] {
 		case "geticon":
 			respond(string(gortsPngIcon))
