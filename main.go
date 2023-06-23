@@ -3,19 +3,18 @@ package main
 import (
 	"bufio"
 	_ "embed"
+	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
-	"strings"
 
-	"go.imnhan.com/gorts/netstring"
+	"go.imnhan.com/gorts/ipc"
 	"go.imnhan.com/gorts/players"
 	"go.imnhan.com/gorts/startgg"
 )
@@ -87,31 +86,22 @@ func startGUI(tclPath string) {
 
 	fmt.Fprintln(stdin, "initialize")
 
-	scanner := bufio.NewScanner(stdout)
-	scanner.Split(netstring.SplitFunc)
-
-	respond := func(ss ...string) {
-		debug := fmt.Sprintf("<-- %v", strings.Join(ss, ", "))
-		if len(debug) > 35 {
-			debug = debug[:35] + "[...]"
-		}
-		println(debug)
-		payload := netstring.EncodeN(ss...)
-		io.WriteString(stdin, payload)
+	respond := func(values ...string) {
+		ipc.Respond(stdin, values)
 	}
 
-	for scanner.Scan() {
-		req := netstring.DecodeMultiple(scanner.Text())
-		fmt.Printf("--> %v\n", strings.Join(req, ", "))
-		switch req[0] {
+	for req := range ipc.IncomingRequests(stdout) {
+		switch req.Method {
+
 		case "forcefocus":
-			err := forceFocus(req[1])
+			err := forceFocus(req.Args[0])
 			if err != nil {
 				fmt.Printf("forcefocus: %s\n", err)
 			}
 			respond("ok")
+
 		case "geticon":
-			respond(string(gortsPngIcon))
+			respond(base64.StdEncoding.EncodeToString([]byte(gortsPngIcon)))
 
 		case "getstartgg":
 			respond(startggInputs.Token, startggInputs.Slug)
@@ -138,22 +128,21 @@ func startGUI(tclPath string) {
 			)
 
 		case "applyscoreboard":
-			sb := req[1:]
-			scoreboard.Description = sb[0]
-			scoreboard.Subtitle = sb[1]
-			scoreboard.P1name = sb[2]
-			scoreboard.P1country = sb[3]
-			scoreboard.P1score, _ = strconv.Atoi(sb[4])
-			scoreboard.P1team = sb[5]
-			scoreboard.P2name = sb[6]
-			scoreboard.P2country = sb[7]
-			scoreboard.P2score, _ = strconv.Atoi(sb[8])
-			scoreboard.P2team = sb[9]
+			scoreboard.Description = req.Args[0]
+			scoreboard.Subtitle = req.Args[1]
+			scoreboard.P1name = req.Args[2]
+			scoreboard.P1country = req.Args[3]
+			scoreboard.P1score, _ = strconv.Atoi(req.Args[4])
+			scoreboard.P1team = req.Args[5]
+			scoreboard.P2name = req.Args[6]
+			scoreboard.P2country = req.Args[7]
+			scoreboard.P2score, _ = strconv.Atoi(req.Args[8])
+			scoreboard.P2team = req.Args[9]
 			scoreboard.Write()
-			respond("ok")
+			respond()
 
 		case "searchplayers":
-			query := req[1]
+			query := req.Args[0]
 			var names []string
 
 			if query == "" {
@@ -172,8 +161,8 @@ func startGUI(tclPath string) {
 			respond(names...)
 
 		case "fetchplayers":
-			startggInputs.Token = req[1]
-			startggInputs.Slug = req[2]
+			startggInputs.Token = req.Args[0]
+			startggInputs.Slug = req.Args[1]
 			ps, err := startgg.FetchPlayers(startggInputs)
 			fmt.Fprintln(stdin, "fetchplayers__resp")
 			if err != nil {
@@ -189,10 +178,6 @@ func startGUI(tclPath string) {
 	}
 
 	println("Tcl process terminated.")
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
 }
 
 type Scoreboard struct {

@@ -26,10 +26,6 @@ dist/GORTS-Linux.zip: linux
 watch:
 	find . -name '*.go' -o -name '*.tcl' | entr -rc go run .
 
-# I only have tests on the netstring package now
-test:
-	find ./netstring -name '*.go' | entr -rc go test ./netstring
-
 gorts.png: gorts.svg
 	convert -background transparent -density 300 -resize 256x256 gorts.svg gorts.png
 

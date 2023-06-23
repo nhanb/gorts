@@ -8,8 +8,6 @@ foreach p {stdin stdout stderr} {
     fconfigure $p -translation lf
 }
 
-source -encoding "utf-8" tcl/netstring.tcl
-
 package require Tk
 
 wm title . "Overly Repetitive Tedious Software (in Go)"
@@ -167,9 +165,6 @@ grid columnconfigure .n.s 1 -weight 1
 grid rowconfigure .n.s 1 -pad 5
 
 proc initialize {} {
-    foreach p {stdin stdout} {
-        fconfigure $p -translation binary
-    }
     loadicon
     loadstartgg
     loadwebmsg
@@ -190,18 +185,24 @@ proc initialize {} {
     }
 }
 
-# Very simple IPC system where Tcl client talks to Go server via stdin/stdout
-# using netstrings as wire format.
+# Very simple line-based IPC system where Tcl client talks to Go server
+# via stdin/stdout
 proc ipc_write {method args} {
-    set payload [concat $method $args]
-    puts -nonewline [netstrings $payload]
-    flush stdout
+    puts "$method [llength $args]"
+    foreach a $args {
+        puts "$a"
+    }
 }
 proc ipc_read {} {
-    return [decodenetstrings [readnetstring stdin]]
+    set results {}
+    set numlines [gets stdin]
+    for {set i 0} {$i < $numlines} {incr i} {
+        lappend results [gets stdin]
+    }
+    return $results
 }
 proc ipc {method args} {
-    ipc_write [concat $method $args]
+    ipc_write $method {*}$args
     return [ipc_read]
 }
 
@@ -213,7 +214,9 @@ proc windows_forcefocus {} {
 proc loadicon {} {
     set resp [ipc "geticon"]
     set iconblob [lindex $resp 0]
-    image create photo applicationIcon -data $iconblob
+    image create photo applicationIcon -data [
+        binary decode base64 $iconblob
+    ]
     wm iconphoto . -default applicationIcon
 }
 
