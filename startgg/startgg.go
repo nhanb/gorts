@@ -90,7 +90,7 @@ func FetchPlayers(i Inputs) ([]players.Player, error) {
 	if err != nil {
 		panic(err)
 	}
-	req.Header.Add("User-Agent", "GORTS/0.4")
+	req.Header.Add("User-Agent", "GORTS/0.5")
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+i.Token)
 
