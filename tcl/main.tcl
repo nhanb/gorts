@@ -147,7 +147,7 @@ grid rowconfigure .n.m.players 3 -pad 5
 
 # start.gg tab:
 
-.n select .n.s; # for debug only
+#.n select .n.s; # for debug only
 ttk::label .n.s.tokenlbl -text "Personal token: "
 ttk::entry .n.s.token -show * -textvariable startgg(token)
 ttk::label .n.s.tournamentlbl -text "Tournament slug: "

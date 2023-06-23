@@ -70,5 +70,6 @@ func Write(filepath string, ps []Player) error {
 	for _, p := range ps {
 		writer.Write([]string{p.Name, p.Country, p.Team})
 	}
+	writer.Flush()
 	return nil
 }
