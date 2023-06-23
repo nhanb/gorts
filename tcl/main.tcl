@@ -290,6 +290,12 @@ proc setupplayersuggestion {} {
         set widget .n.m.players.$key
         set matches [ipc "searchplayers" $newvalue]
         $widget configure -values $matches
+
+        if {[llength matches] == 1 && [lindex $matches 0] == $newvalue} {
+            set countryvar "p[string index $key 1]country"
+            set country [lindex [ipc "getplayercountry" $newvalue] 0]
+            set ::scoreboard($countryvar) $country
+        }
     }
     trace add variable ::scoreboard write update_suggestions
 }

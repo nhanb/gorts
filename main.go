@@ -178,6 +178,17 @@ func startGUI(tclPath string) {
 		case "clearstartgg":
 			startggInputs = startgg.Inputs{}
 			startggInputs.Write(StartggFile)
+
+		case "getplayercountry":
+			playerName := req.Args[0]
+			var country string
+			for _, p := range allplayers {
+				if p.Name == playerName {
+					country = p.Country
+					break
+				}
+			}
+			respond(country)
 		}
 	}
 
