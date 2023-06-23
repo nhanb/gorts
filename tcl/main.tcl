@@ -102,11 +102,17 @@ ttk::button .n.m.buttons.reset -text "↶ Reset scores" -command {
     set scoreboard(p2score) 0
 }
 ttk::button .n.m.buttons.swap -text "⇄ Swap players" -command {
-    foreach key {name country score team} {
+    # Since country is updated whenever name is updated, we'll need to write
+    # countries last.
+    set p1country $scoreboard(p1country)
+    set p2country $scoreboard(p2country)
+    foreach key {name score team} {
         set tmp $scoreboard(p1$key)
         set scoreboard(p1$key) $scoreboard(p2$key)
         set scoreboard(p2$key) $tmp
     }
+    set scoreboard(p1country) $p2country
+    set scoreboard(p2country) $p1country
 }
 ttk::label .n.m.status -textvariable mainstatus
 grid .n.m.description -row 0 -column 0 -sticky NESW -pady {0 5}
