@@ -194,11 +194,12 @@ proc initialize {} {
 # using netstrings as wire format.
 proc ipc_write {method args} {
     set payload [concat $method $args]
-    puts -nonewline [netstrings $payload]
+    puts -nonewline [encoding convertto "utf-8" [netstrings $payload]]
     flush stdout
 }
 proc ipc_read {} {
-    return [decodenetstrings [readnetstring stdin]]
+    set binarystrings [decodenetstrings [readnetstring stdin]]
+    return [lmap x $binarystrings {encoding convertfrom "utf-8" $x}]
 }
 proc ipc {method args} {
     ipc_write [concat $method $args]

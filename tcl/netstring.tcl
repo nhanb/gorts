@@ -1,5 +1,5 @@
 proc netstring {s} {
-    set len [string length $s]
+    set len [string bytelength $s]
     return "$len:$s,"
 }
 
@@ -10,6 +10,11 @@ proc netstrings {strings} {
     }
     return [netstring $result]
 }
+
+#fconfigure stdout -translation binary
+#set val [netstrings {"オダモン" "Bờm"}]
+#puts [encoding convertto "utf-8" $val]
+#flush stdout
 
 proc readnetstring {chan} {
     set data ""
