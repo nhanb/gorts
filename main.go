@@ -23,7 +23,7 @@ const WebPort = "1337"
 const WebDir = "web"
 const ScoreboardFile = WebDir + "/state.json"
 const PlayersFile = "players.csv"
-const StartggFile = "creds-start.gg"
+const StartggFile = "creds-startgg"
 
 //go:embed gorts.png
 var gortsPngIcon []byte
@@ -174,6 +174,10 @@ func startGUI(tclPath string) {
 			startggInputs.Write(StartggFile)
 			players.Write(PlayersFile, allplayers)
 			respond("ok", fmt.Sprintf("Successfully fetched %d players.", len(allplayers)))
+
+		case "clearstartgg":
+			startggInputs = startgg.Inputs{}
+			startggInputs.Write(StartggFile)
 		}
 	}
 

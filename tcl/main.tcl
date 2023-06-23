@@ -147,22 +147,27 @@ grid rowconfigure .n.m.players 3 -pad 5
 
 # start.gg tab:
 
-#.n select .n.s; # for debug only
+.n select .n.s; # for debug only
 ttk::label .n.s.tokenlbl -text "Personal token: "
 ttk::entry .n.s.token -show * -textvariable startgg(token)
 ttk::label .n.s.tournamentlbl -text "Tournament slug: "
 ttk::entry .n.s.tournamentslug -textvariable startgg(slug)
-ttk::button .n.s.fetch -text "Fetch players" -command fetchplayers
+ttk::frame .n.s.buttons
+ttk::button .n.s.buttons.fetch -text "↓ Fetch players" -command fetchplayers
+ttk::button .n.s.buttons.clear -text "✘ Clear" -command clearstartgg
 ttk::label .n.s.msg -textvariable startgg(msg)
 
 grid .n.s.tokenlbl -row 0 -column 0 -sticky W
 grid .n.s.token -row 0 -column 1 -sticky EW
 grid .n.s.tournamentlbl -row 1 -column 0 -sticky W
 grid .n.s.tournamentslug -row 1 -column 1 -sticky EW
-grid .n.s.fetch -row 2 -column 1 -stick W
+grid .n.s.buttons -row 2 -column 1 -stick WE
+grid .n.s.buttons.fetch -stick W
+grid .n.s.buttons.clear -row 0 -column 1 -stick W -padx 5
 grid .n.s.msg -row 3 -column 1 -stick W
 grid columnconfigure .n.s 1 -weight 1
 grid rowconfigure .n.s 1 -pad 5
+grid rowconfigure .n.s 2 -pad 5
 
 proc initialize {} {
     loadicon
@@ -290,7 +295,12 @@ proc setupplayersuggestion {} {
 }
 
 proc fetchplayers {} {
-    .n.s.fetch configure -state disabled
+    if {$::startgg(token) == "" || $::startgg(slug) == ""} {
+        set ::startgg(msg) "Please enter token & slug first."
+        return
+    }
+    .n.s.buttons.fetch configure -state disabled
+    .n.s.buttons.clear configure -state disabled
     .n.s.token configure -state disabled
     .n.s.tournamentslug configure -state disabled
     .n state disabled
@@ -309,10 +319,18 @@ proc fetchplayers__resp {} {
         loadplayernames
     }
 
-    .n.s.fetch configure -state normal
+    .n.s.buttons.fetch configure -state normal
+    .n.s.buttons.clear configure -state normal
     .n.s.token configure -state normal
     .n.s.tournamentslug configure -state normal
     .n state !disabled
+}
+
+proc clearstartgg {} {
+    set ::startgg(token) ""
+    set ::startgg(slug) ""
+    set ::startgg(msg) ""
+    ipc_write "clearstartgg"
 }
 
 proc discardscoreboard {} {
