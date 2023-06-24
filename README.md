@@ -57,7 +57,7 @@ Just unzip then:
 - Browser size must be 1920x1080.
 - If you want to manually tweak player names after importing from start.gg,
   edit **data/players.csv** with any text editor (notepad++) or spreadsheet
-  editor (excel or [libreoffice calc][5])
+  editor (excel or [libreoffice calc][2])
 - If you want to customize the look, open up the **web** folder and go wild.
   You only need basic HTML/CSS/JS knowledge to work on it. No fancy frameworks.
 
@@ -154,3 +154,4 @@ Implementing netstrings was a fun exercise but, again, sounds like a premature
 optimization in this use case. Keeping it simple for now.
 
 [1]: https://github.com/nhanb/orts
+[2]: https://www.libreoffice.org/discover/calc/
