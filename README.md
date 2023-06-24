@@ -1,16 +1,40 @@
-# GORTS
+# Overly Repetitive Tedious Software (in Go)
 
 ![](gorts.png)
 
 [![builds.sr.ht status](https://builds.sr.ht/~nhanb/gorts/commits/master.svg)](https://builds.sr.ht/~nhanb/gorts/commits/master?)
 [![github status](https://github.com/nhanb/gorts/actions/workflows/release.yml/badge.svg)](https://github.com/nhanb/gorts/actions/workflows/release.yml)
 
-... is [ORTS][1] but in pure Go and pure Tcl/Tk
-passing messages through good ole pipes, the way Bell Labs intended.
+GORTS is a simple scoreboard overlay for fighting games. The default design is
+compatible with Street Fighter 6, Tekken 8, KOF XV, and Guilty Gear Strive.
 
-**GORTS is a work in progress.**
-Nothing is guaranteed to work yet. If you need something to use _now_, see
-[ORTS][1].
+It's a rewritten successor of [ORTS][1]. This version is written in Go and
+Tcl/Tk, communicating via goold old pipes, the way Bell Labs intended.
+
+![](screenshots/tab1.png)
+![](screenshots/tab2.png)
+
+![](screenshots/gameplay.png)
+
+# Features
+
+GORTS is heavily inspired by [StreamControl](http://farpnut.net/streamcontrol/)
+but has a bunch of opinionated quality-of-life improvements:
+
+- **Visible diff & easy undo**: Changes not yet applied to stream are
+  highlighted and can be discarded with the Discard button.
+
+- **Player name + country import**: Currently supports start.gg.
+  Player data is
+  saved as a csv file which can then be updated manually using any (decent)
+  spreadsheet editor.
+
+- **Flexible player name suggestion as you type**: unlike StreamControl, you
+  don't need to care about whitespaces, dots, dashes, or any non-alphanumeric
+  characters.
+
+- **Cross-platform**: Supports Windows & Linux. macOS support is unplanned but
+  if you really need it, I'm open to contract work.
 
 # Download
 
@@ -22,11 +46,20 @@ You can download from either of:
 - [GitHub](https://github.com/nhanb/gorts/releases/latest): download
   `GORTS-Linux.zip` or `GORTS-Windows.zip`.
 
-# Use
+# How to use
 
 ## Windows
 
-Just unzip and run gorts.exe.
+Just unzip then:
+
+- Run **gorts.exe**.
+- Open OBS => Add browser source => Point to **http://localhost:1337**
+- Browser size must be 1920x1080.
+- If you want to manually tweak player names after importing from start.gg,
+  edit **data/players.csv** with any text editor (notepad++) or spreadsheet
+  editor (excel or [libreoffice calc][5])
+- If you want to customize the look, open up the **web** folder and go wild.
+  You only need basic HTML/CSS/JS knowledge to work on it. No fancy frameworks.
 
 ## Linux
 
@@ -37,10 +70,6 @@ Unzip, run `gorts` from the unzipped directory.
 
 Proper packaging is not planned because I only develop on Linux and stream on
 Windows. If you want to contribute then I'm happy to give pointers though.
-
-## macOS or any other unix-like
-
-Unplanned but I'm open to paid work.
 
 # I got a virus warning?
 
@@ -58,6 +87,21 @@ positives more often than usual. See <https://go.dev/doc/faq#virus>:
 So no, I'm not trying to hackerman you. If you're really concerned, feel free
 to audit the code and compile GORTS yourself. There's really not that much
 code.
+
+# I want a custom design?
+
+See "How to use":
+
+> If you want to customize the look, open up the **web** folder and go wild.
+> You only need basic HTML/CSS/JS knowledge to work on it. No fancy frameworks.
+
+If you really need a custom design but can't implement it yourself, I'm open to
+contract work. Contact me at <paid@imnhan.com>.
+
+# Credits
+
+Just like ORTS, the out-of-the-box design in GORTS was done by
+[hismit](https://twitter.com/hismit3rd).
 
 # Compile from source
 
@@ -100,5 +144,13 @@ Tcl options on Windows:
 
 Web server should probably read state from memory instead of disk (state.json).
 Sounds like premature optimization though.
+
+A line-based wire format for IPC is simple, but inefficient: binary data (e.g.
+in `geticon`) needs to be base64-encoded then decoded on the other side. I have
+an experimental [netstrings](https://cr.yp.to/proto/netstrings.txt)-based
+version on the `netstring` branch, but it's more awkward to implement in tcl
+due to its binary pipe convention (defaults to iso8859-1 encoding).
+Implementing netstrings was a fun exercise but, again, sounds like a premature
+optimization in this use case. Keeping it simple for now.
 
 [1]: https://github.com/nhanb/orts
