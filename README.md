@@ -98,11 +98,6 @@ See "How to use":
 If you really need a custom design but can't implement it yourself, I'm open to
 contract work. Contact me at <paid@imnhan.com>.
 
-# Credits
-
-Just like ORTS, the out-of-the-box design in GORTS was done by
-[hismit](https://twitter.com/hismit3rd).
-
 # Compile from source
 
 Can cross-compile from any unix-like. I'm cheating a little though, by
@@ -152,6 +147,47 @@ version on the `netstring` branch, but it's more awkward to implement in tcl
 due to its binary pipe convention (defaults to iso8859-1 encoding).
 Implementing netstrings was a fun exercise but, again, sounds like a premature
 optimization in this use case. Keeping it simple for now.
+
+# Credits
+
+## Design
+
+Just like ORTS, the out-of-the-box design in GORTS was done by
+[hismit](https://twitter.com/hismit3rd).
+
+## Icon
+
+GORTS's icon was lifted verbatim from Haiku OS:
+https://github.com/darealshinji/haiku-icons/blob/master/svg/App_MidiPlayer.svg
+
+The following is its original license:
+
+> The MIT License (MIT)
+>
+> Copyright (c) 2007-2020 Haiku, Inc.
+>
+> Permission is hereby granted, free of charge, to any person obtaining a copy
+> of this software and associated documentation files (the "Software"), to deal
+> in the Software without restriction, including without limitation the rights
+> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+> copies of the Software, and to permit persons to whom the Software is
+> furnished to do so, subject to the following conditions:
+>
+> The above copyright notice and this permission notice shall be included in all
+> copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> SOFTWARE.
+
+## Fonts
+
+The default design uses `Jura` and `Noto Color Emoji` from Google Fonts. See
+their original licenses in `web/fonts/`.
 
 [1]: https://github.com/nhanb/orts
 [2]: https://www.libreoffice.org/discover/calc/
