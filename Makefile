@@ -6,6 +6,7 @@ windows:
 	rm -rf dist/windows/tcl
 	cp -r tcl dist/windows/
 	cp players.sample.csv dist/windows/
+	cp README.md dist/windows/
 
 linux:
 	CGO_ENABLED=0 GOOS=linux go build -o dist/linux/gorts
@@ -14,6 +15,7 @@ linux:
 	rm -rf dist/linux/tcl
 	cp -r tcl dist/linux/
 	cp players.sample.csv dist/linux/
+	cp README.md dist/linux/
 
 dist/GORTS-Windows.zip: windows
 	cd dist/windows; \
