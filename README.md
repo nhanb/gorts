@@ -134,7 +134,9 @@ Tcl options on Windows:
 
 - [TclKits](https://tclkits.rkeene.org/fossil/wiki/Downloads): single 5.8MiB
   binary <== currently used
-- [IronTcl](https://www.irontcl.com): 14.5Mib folder unzipped
+- [IronTcl](https://www.irontcl.com): 14.5Mib folder unzipped. Apparently
+  IronTcl does text scaling perfectly out of the box (tested on Windows 10 with
+  125% scaling), while tclkit gets blurry.
 - Manually compile? TODO
 
 Web server should probably read state from memory instead of disk (state.json).
