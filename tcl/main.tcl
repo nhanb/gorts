@@ -218,8 +218,16 @@ proc ipc {method args} {
 }
 
 proc windows_forcefocus {} {
+    # First call winapi's SetForegroundWindow()
     set handle [winfo id .]
     ipc "forcefocus" $handle
+    # Then call force focus on tcl side
+    focus -force .
+    # We must do both in order to properly focus on main tk window.
+    # Don't ask me why - that's just how it works.
+    #
+    # Alternatively we can try making Tcl our entrypoint instead of exec-ing
+    # Tcl from Go. Maybe some other time.
 }
 
 proc loadicon {} {
