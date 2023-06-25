@@ -40,11 +40,11 @@ but has a bunch of opinionated quality-of-life improvements:
 
 You can download from either of:
 
+- [GitHub](https://github.com/nhanb/gorts/releases/latest): download
+  `GORTS-Linux.zip` or `GORTS-Windows.zip`.
 - [SourceHut](https://git.sr.ht/~nhanb/gorts/refs): click on the latest
   version (vX.X.X), download `GORTS-Linux-vX.X.X.zip` or
   `GORTS-Windows-vX.X.X.zip`.
-- [GitHub](https://github.com/nhanb/gorts/releases/latest): download
-  `GORTS-Linux.zip` or `GORTS-Windows.zip`.
 
 # How to use
 
