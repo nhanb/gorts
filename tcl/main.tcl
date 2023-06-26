@@ -68,7 +68,7 @@ ttk::frame .n.m -padding 5
 ttk::frame .n.s -padding 5
 .n add .n.m -text Main
 .n add .n.s -text start.gg
-grid .n -column 0 -row 0 -sticky NESW -padx 3 -pady 3
+grid .n -column 0 -row 0 -sticky NESW
 
 # Main tab:
 
