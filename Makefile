@@ -6,6 +6,7 @@ windows:
 	cp players.sample.csv dist/windows/
 	cp README.md dist/windows/
 	cp -r screenshots dist/windows/
+	cp gorts.png dist/windows/
 
 linux:
 	CGO_ENABLED=0 GOOS=linux go build -o dist/linux/gorts
@@ -14,6 +15,7 @@ linux:
 	cp players.sample.csv dist/linux/
 	cp README.md dist/linux/
 	cp -r screenshots dist/linux/
+	cp gorts.png dist/linux/
 
 dist/GORTS-Windows.zip: windows
 	cd dist/windows; \

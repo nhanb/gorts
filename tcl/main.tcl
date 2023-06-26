@@ -231,12 +231,8 @@ proc windows_forcefocus {} {
 }
 
 proc loadicon {} {
-    set resp [ipc "geticon"]
-    set iconblob [lindex $resp 0]
-    image create photo applicationIcon -data [
-        binary decode base64 $iconblob
-    ]
-    wm iconphoto . -default applicationIcon
+    set iconblob [image create photo -file gorts.png]
+    wm iconphoto . -default $iconblob
 }
 
 proc loadstartgg {} {

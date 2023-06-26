@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	_ "embed"
-	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -24,9 +23,6 @@ const WebDir = "web"
 const ScoreboardFile = WebDir + "/state.json"
 const PlayersFile = "players.csv"
 const StartggFile = "creds-startgg"
-
-//go:embed gorts.png
-var gortsPngIcon []byte
 
 func main() {
 	// No need to wait on the http server,
@@ -99,9 +95,6 @@ func startGUI(tclPath string) {
 				fmt.Printf("forcefocus: %s\n", err)
 			}
 			respond("ok")
-
-		case "geticon":
-			respond(base64.StdEncoding.EncodeToString([]byte(gortsPngIcon)))
 
 		case "getstartgg":
 			respond(startggInputs.Token, startggInputs.Slug)
