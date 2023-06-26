@@ -17,7 +17,9 @@ linux:
 
 dist/GORTS-Windows.zip: windows
 	cd dist/windows; \
-		curl -L 'https://tclkits.rkeene.org/fossil/raw/tclkit-8.6.3-win32-x86_64.exe?name=403c507437d0b10035c7839f22f5bb806ec1f491' > tclkit.exe; \
+		curl -L 'https://www.irontcl.com/downloads/irontcl-amd64-8.6.7.zip' > irontcl.zip; \
+		unzip -o irontcl.zip; \
+		rm irontcl.zip; \
 		zip -r ../GORTS-Windows.zip .
 
 dist/GORTS-Linux.zip: linux

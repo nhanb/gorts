@@ -133,10 +133,10 @@ this program.  If not, see <https://www.gnu.org/licenses/>.
 Tcl options on Windows:
 
 - [TclKits](https://tclkits.rkeene.org/fossil/wiki/Downloads): single 5.8MiB
-  binary <== currently used
+  binary
 - [IronTcl](https://www.irontcl.com): 14.5Mib folder unzipped. Apparently
   IronTcl does text scaling perfectly out of the box (tested on Windows 10 with
-  125% scaling), while tclkit gets blurry.
+  125% scaling), while tclkit gets blurry. <== currently used
 - Manually compile? TODO
 
 Web server should probably read state from memory instead of disk (state.json).
@@ -191,5 +191,10 @@ The following is its original license:
 The default design uses `Jura` and `Noto Color Emoji` from Google Fonts. See
 their original licenses in `web/fonts/`.
 
+## Tcl/Tk
+
+GORTS bundles the [IronTcl][3] tcl/tk distribution.
+
 [1]: https://github.com/nhanb/orts
 [2]: https://www.libreoffice.org/discover/calc/
+[3]: https://www.irontcl.com/index.html

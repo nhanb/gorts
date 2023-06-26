@@ -9,7 +9,7 @@ import (
 	"github.com/lxn/win"
 )
 
-const DefaultTclPath = "./tclkit.exe"
+const DefaultTclPath = "./IronTcl/bin/wish86t.exe"
 
 func forceFocus(handle string) error {
 	hex := handle[2:] // trim the "0x" prefix
