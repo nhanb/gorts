@@ -353,6 +353,10 @@ proc discardscoreboard {} {
     foreach key [array names ::scoreboard] {
         set ::scoreboard($key) $::applied_scoreboard($key)
     }
+    # Country is updated whenever player name is updated,
+    # so make sure we set countries last.
+    set ::scoreboard(p1country) $::applied_scoreboard(p1country)
+    set ::scoreboard(p2country) $::applied_scoreboard(p2country)
 }
 
 proc update_applied_scoreboard {} {
