@@ -137,7 +137,9 @@ Tcl options on Windows:
 - [IronTcl](https://www.irontcl.com): 14.5Mib folder unzipped. Apparently
   IronTcl does text scaling perfectly out of the box (tested on Windows 10 with
   125% scaling), while tclkit gets blurry. <== currently used
-- Manually compile? TODO
+- [tcltk/tk onefiledist][4]: very lean single executable (6.12MiB unzipped).
+  Also tested to work and with crisp text. Cons: it's 8.7 alpha only, and
+  github action artifacts are not publically accessible (must login).
 
 Web server should probably read state from memory instead of disk (state.json).
 Sounds like premature optimization though.
@@ -198,3 +200,4 @@ GORTS bundles the [IronTcl][3] tcl/tk distribution.
 [1]: https://github.com/nhanb/orts
 [2]: https://www.libreoffice.org/discover/calc/
 [3]: https://www.irontcl.com/index.html
+[4]: https://github.com/tcltk/tk/actions/workflows/onefiledist.yml
