@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 
@@ -44,7 +44,7 @@ func LoadInputs(filepath string) Inputs {
 
 func (c *Inputs) Write(filepath string) {
 	blob := []byte(fmt.Sprintf("%s\n%s\n", c.Token, c.Slug))
-	err := ioutil.WriteFile(filepath, blob, 0644)
+	err := os.WriteFile(filepath, blob, 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -100,7 +100,7 @@ func FetchPlayers(i Inputs) ([]players.Player, error) {
 	}
 	defer resp.Body.Close()
 
-	respdata, err := ioutil.ReadAll(resp.Body)
+	respdata, err := io.ReadAll(resp.Body)
 	//fmt.Println(">>>>", string(respdata[:50]))
 
 	if resp.StatusCode != http.StatusOK {

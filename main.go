@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -206,7 +206,7 @@ func initScoreboard() Scoreboard {
 	file, err := os.Open(ScoreboardFile)
 	if err == nil {
 		defer file.Close()
-		bytes, err := ioutil.ReadAll(file)
+		bytes, err := io.ReadAll(file)
 		if err != nil {
 			panic(err)
 		}
@@ -220,7 +220,7 @@ func (s *Scoreboard) Write() {
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile(ScoreboardFile, blob, 0644)
+	err = os.WriteFile(ScoreboardFile, blob, 0644)
 	if err != nil {
 		panic(err)
 	}
