@@ -60,3 +60,11 @@ Lifted from https://gwfh.mranftl.com/fonts
   font-weight: 400;
   src: url("./fonts/noto-color-emoji-v25-emoji-regular.woff2") format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+
+@font-face {
+  font-display: swap;
+  font-family: "Twemoji Mozilla";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./fonts/Twemoji.Mozilla.ttf") format("ttf");
+}

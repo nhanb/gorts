@@ -55,8 +55,13 @@ body {
 
 #p1country,
 #p2country {
+  /*
   font-family: "Noto Color Emoji";
   font-size: 1.8em;
+  top: 8px;
+  */
+  font-family: "Twemoji Mozilla";
+  font-size: 2.2em;
   top: 8px;
 }
 
