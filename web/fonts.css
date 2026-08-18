@@ -66,5 +66,5 @@ Lifted from https://gwfh.mranftl.com/fonts
   font-family: "Twemoji Mozilla";
   font-style: normal;
   font-weight: 400;
-  src: url("./fonts/Twemoji.Mozilla.ttf") format("ttf");
+  src: url("./fonts/Twemoji.Mozilla.ttf") format("truetype");
 }
