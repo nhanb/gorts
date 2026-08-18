@@ -2,7 +2,6 @@
 
 ![](gorts.png)
 
-[![builds.sr.ht status](https://builds.sr.ht/~nhanb/gorts/commits/master.svg)](https://builds.sr.ht/~nhanb/gorts/commits/master?)
 [![github status](https://github.com/nhanb/gorts/actions/workflows/release.yml/badge.svg)](https://github.com/nhanb/gorts/actions/workflows/release.yml)
 
 GORTS is a simple scoreboard overlay for fighting games. The default design is
@@ -42,13 +41,10 @@ but has a bunch of opinionated quality-of-life improvements:
 
 # Download
 
-You can download from either of:
+You can download from:
 
 - [GitHub](https://github.com/nhanb/gorts/releases/latest): download
   `GORTS-Linux.zip` or `GORTS-Windows.zip`.
-- [SourceHut](https://git.sr.ht/~nhanb/gorts/refs): click on the latest
-  version (vX.X.X), download `GORTS-Linux-vX.X.X.zip` or
-  `GORTS-Windows-vX.X.X.zip`.
 
 # How to use
 
