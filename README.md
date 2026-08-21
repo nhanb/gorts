@@ -1,3 +1,10 @@
+# DISCONTINUED
+
+GORTS is now discontinued.
+Check out its successor [ZORTS](https://github.com/nhanb/zorts)
+(creative naming, I know).
+
+
 # Overly Repetitive Tedious Software (in Go)
 
 ![](gorts.png)
